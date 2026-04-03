@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap');
+
+:root {
+  --f1-red: #e10600;
+  --f1-dark: #15151e;
+  --f1-black: #000000;
+  --f1-white: #ffffff;
+  --f1-grey: #38383f;
+  --f1-light-grey: #d0d0d2;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Titillium Web', sans-serif;
+  background-color: var(--f1-dark);
+  color: var(--f1-white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: 
+    linear-gradient(45deg, var(--f1-black) 25%, transparent 25%, transparent 75%, var(--f1-black) 75%, var(--f1-black)),
+    linear-gradient(45deg, var(--f1-black) 25%, transparent 25%, transparent 75%, var(--f1-black) 75%, var(--f1-black));
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, transparent 0%, var(--f1-black) 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  color: var(--f1-white);
+  text-align: center;
+  letter-spacing: 2px;
+  border-left: 10px solid var(--f1-red);
+  padding-left: 1rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 1rem;
+}
+
+.dashboard-panel {
+  background: var(--f1-black);
+  border: 2px solid var(--f1-grey);
+  border-radius: 0;
+  padding: 30px;
+  position: relative;
+  border-top: 6px solid var(--f1-red);
+}
+
+.dashboard-panel h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  color: var(--f1-white);
+  border-bottom: 1px solid var(--f1-grey);
+  padding-bottom: 10px;
+}
+
+.race-list {
+  list-style: none;
+  text-align: left;
+}
+
+.race-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--f1-grey);
+  transition: background 0.2s, padding-left 0.2s;
+  cursor: pointer;
+}
+
+.race-item:hover {
+  background: var(--f1-grey);
+  padding-left: 20px;
+  border-left: 4px solid var(--f1-red);
+}
+
+.race-date {
+  color: var(--f1-red);
+  font-weight: 900;
+  font-size: 1rem;
+  width: 75px;
+}
+
+.race-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.race-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+.race-winner {
+  font-size: 0.85rem;
+  color: var(--f1-light-grey);
+  margin-top: 4px;
+}
+
+.race-item.completed .race-name {
+  color: var(--f1-light-grey);
+}
+
+.btn-primary {
+  background: var(--f1-red);
+  color: var(--f1-white);
+  border: none;
+  padding: 18px 36px;
+  font-weight: 900;
+  font-size: 1.2rem;
+  font-family: 'Titillium Web', sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin-top: 1rem;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+.btn-primary:hover {
+  background: #ffffff;
+  color: var(--f1-red);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--f1-light-grey);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+input, select {
+  width: 100%;
+  background: var(--f1-dark);
+  border: 1px solid var(--f1-grey);
+  border-radius: 0;
+  padding: 14px 16px;
+  color: white;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--f1-red);
+}
+
+/* Probabilities */
+.prob-row {
+  margin-bottom: 1rem;
+}
+
+.prob-label {
+  display: flex;
+  justify-content: space-between;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.prob-bar-bg {
+  width: 100%;
+  height: 12px;
+  background: var(--f1-grey);
+  overflow: hidden;
+}
+
+.prob-bar-fill {
+  height: 100%;
+  background: var(--f1-red);
+  transition: width 0.5s ease-out;
+}
+
+.prediction-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: var(--f1-grey);
+  padding: 15px 20px;
+  border-left: 8px solid var(--f1-red);
+}
+
+.position-badge {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--f1-white);
+  margin-right: 1.5rem;
+  line-height: 1;
+}
+
+.team-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.loader {
+  border: 5px solid var(--f1-grey);
+  border-top-color: var(--f1-red);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
