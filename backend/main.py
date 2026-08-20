@@ -1,12 +1,15 @@
 from contextlib import asynccontextmanager
 
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+load_dotenv()
+
 import db
 from pipeline.scheduler import start_scheduler, stop_scheduler
-from routers import drivers, predictions, schedule
+from routers import drivers, live, predictions, schedule
 from services import model_service
 
 
@@ -14,7 +17,9 @@ from services import model_service
 async def lifespan(app: FastAPI):
     model_service.load_model()
     start_scheduler()
+    live.manager.start()
     yield
+    live.manager.stop()
     stop_scheduler()
 
 
@@ -31,6 +36,7 @@ app.add_middleware(
 app.include_router(schedule.router)
 app.include_router(drivers.router)
 app.include_router(predictions.router)
+app.include_router(live.router)
 
 
 @app.get("/")

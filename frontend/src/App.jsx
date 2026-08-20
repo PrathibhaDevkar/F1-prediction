@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './index.css'
 import LapViewModal from './components/LapViewModal'
+import LiveTelemetry from './components/LiveTelemetry'
 
 const API_BASE = 'http://localhost:8000'
 
@@ -255,6 +256,8 @@ function App() {
           <p style={{ color: 'var(--f1-light-grey)' }}>No upcoming race found on the calendar.</p>
         )}
       </div>
+
+      <LiveTelemetry />
 
       {/* Lap View Modal Component */}
       <LapViewModal race={selectedRace} onClose={() => setSelectedRace(null)} />
