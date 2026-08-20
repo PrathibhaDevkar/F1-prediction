@@ -36,13 +36,14 @@ Apex F1 Predictor forecasts Formula 1 race finishes using a model trained on rea
 
 ## Known limitations
 
-- **Model accuracy is modest** (~10% on held-out data at the time of writing) — predicting an *exact* finishing position from grid/team/driver/circuit alone, with no weather/reliability/qualifying-pace data, is a genuinely hard target. See "Future Enhancements" below.
+- **Model accuracy is modest** (~12% exact match, but within 3 positions ~59% of the time, MAE ~4 positions on held-out data). Features now include rolling driver/team form and DNF rate on top of grid/team/driver/circuit, but there's still no weather or qualifying-pace signal. See "Future Enhancements" below.
 - **Next-race grid is assumed**, not real — actual grid positions aren't known until qualifying finishes, so the forecast uses each driver's most recent race grid as a stand-in.
 - **Live telemetry only works during an actual session window**, and OpenF1's real-time tier requires a paid API key; outside that, the UI correctly shows a "no session live" state rather than anything live.
 
 ## Future Enhancements
 
 - **Live Weather Integration**: feed real-time weather (rain probability, track temp) into the model.
-- **Advanced ML Models**: XGBoost/neural nets, richer features (qualifying pace, pit-stop averages, reliability history).
+- **More features**: qualifying pace, pit-stop averages.
+- **Try other algorithms**: XGBoost, gradient boosting variants.
 - **Head-to-Head Driver Comparisons**: teammate-vs-teammate analytics per circuit.
-- **Qualifying-triggered forecast refresh**: re-run the next-race forecast specifically once qualifying completes, so the "assumed grid" becomes the real one before race day.
+- **Qualifying-triggered forecast refresh**: re-run the next-race forecast once qualifying completes, so "assumed grid" becomes real.

@@ -4,14 +4,41 @@ call (grid/team/driver/circuit), and a full-grid forecast for the next race.
 import pandas as pd
 
 from services import fastf1_service
+from services.feature_engineering import DEFAULT_AVG_FINISH, DEFAULT_DNF_RATE, RaceHistory
 
 
-def build_prediction(model, features, grid, team, driver=None, circuit=None):
+def build_prediction(
+    model,
+    features,
+    grid,
+    team,
+    driver=None,
+    circuit=None,
+    rolling_features: dict | None = None,
+    driver_form: dict | None = None,
+    team_form: dict | None = None,
+):
+    """rolling_features, if given, is used as-is (the exact case —
+    predict_next_race has a live RaceHistory to compute it from).
+    Otherwise driver_form/team_form (snapshots saved alongside the model)
+    are looked up by name, falling back to league-average defaults for an
+    unknown/unspecified driver or team — this is what the manual what-if
+    form uses, since it only has the saved snapshot, not a live history.
+    """
     row = {"grid": grid, f"team_{team}": 1}
     if driver:
         row[f"driver_{driver}"] = 1
     if circuit:
         row[f"circuit_{circuit}"] = 1
+
+    if rolling_features:
+        row.update(rolling_features)
+    else:
+        d_form = (driver_form or {}).get(driver, {})
+        t_form = (team_form or {}).get(team, {})
+        row["driver_recent_avg_finish"] = d_form.get("driver_recent_avg_finish", DEFAULT_AVG_FINISH)
+        row["driver_dnf_rate"] = d_form.get("driver_dnf_rate", DEFAULT_DNF_RATE)
+        row["team_recent_avg_finish"] = t_form.get("team_recent_avg_finish", DEFAULT_AVG_FINISH)
 
     input_data = pd.DataFrame([row])
     for col in features:
@@ -32,8 +59,15 @@ def build_prediction(model, features, grid, team, driver=None, circuit=None):
     return {"predicted_position": int(prediction[0]), "probabilities": prob_list[:5]}
 
 
-def predict_next_race(model_data, next_event: dict, season: int = fastf1_service.CURRENT_SEASON):
-    """Forecast every current driver's finish for the next race.
+def predict_next_race(
+    model_data,
+    next_event: dict,
+    history: RaceHistory,
+    season: int = fastf1_service.CURRENT_SEASON,
+):
+    """Forecast every current driver's finish for the next race, using the
+    live RaceHistory (built during this same training run) for each
+    driver/team's exact current rolling form.
 
     Real grid positions aren't known until qualifying happens, so this uses
     each driver's grid position from their MOST RECENT race as a stand-in —
@@ -68,7 +102,10 @@ def predict_next_race(model_data, next_event: dict, season: int = fastf1_service
         if grid is None or pd.isna(grid):
             continue
 
-        result = build_prediction(model, features, int(grid), team, driver=abbr, circuit=circuit)
+        rolling = history.features_before_this_race(abbr, team)
+        result = build_prediction(
+            model, features, int(grid), team, driver=abbr, circuit=circuit, rolling_features=rolling
+        )
         forecasts.append({
             "driver": driver["FullName"],
             "abbreviation": abbr,

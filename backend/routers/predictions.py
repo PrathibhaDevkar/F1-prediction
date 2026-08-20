@@ -28,6 +28,8 @@ def predict(request: PredictRequest):
         request.team,
         request.driver,
         request.circuit,
+        driver_form=model_data.get("driver_form"),
+        team_form=model_data.get("team_form"),
     )
 
 
