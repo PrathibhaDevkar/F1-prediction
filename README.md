@@ -7,7 +7,7 @@ Apex F1 Predictor forecasts Formula 1 race finishes using a model trained on rea
 - **Real season calendar & results**: The calendar, driver/team lineup, and race results (winner, podium, laps) all come from [FastF1](https://github.com/theOehrly/Fast-F1), not hardcoded data.
 - **Next Race Prediction**: A full-grid forecast for the next upcoming race, generated automatically by the training pipeline — separate from the manual what-if form below.
 - **Prediction Engine**: Enter a grid position, team, and optionally a driver/circuit, to get a predicted finishing position plus win/podium/points probabilities.
-- **Live Telemetry**: Real-time speed/gear/throttle/brake/DRS per driver via [OpenF1](https://openf1.org) while an F1 session is actually in progress — shows a clear "no session live" state the rest of the time (which is most of the time; sessions run a few hours every couple of weeks).
+- **Live Telemetry & Track Map**: Real-time speed/gear/throttle/brake/DRS and a live position map per driver via [OpenF1](https://openf1.org) while an F1 session is actually in progress — shows a clear "no session live" state the rest of the time.
 - **Head-to-Head**: Pick any two drivers, see their real record across every shared race back to 2023.
 - **Autonomous retrain pipeline**: A scheduler checks for newly completed races and retrains the model + refreshes the next-race forecast on its own — no manual script running required.
 

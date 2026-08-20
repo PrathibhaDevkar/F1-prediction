@@ -97,7 +97,7 @@ export default function LiveTelemetry() {
       {status === 'connected' && (
         <>
           <p style={{ color: 'var(--f1-light-grey)', fontSize: '0.85rem', marginBottom: '1rem' }}>
-            🔴 LIVE — {session?.session_name} · {session?.location}, {session?.country_name}
+            <span className="live-dot"></span>LIVE — {session?.session_name} · {session?.location}, {session?.country_name}
           </p>
 
           <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem' }}>

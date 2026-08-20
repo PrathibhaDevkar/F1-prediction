@@ -89,8 +89,12 @@ export default function HeadToHead({ drivers }) {
                 </tr>
               </thead>
               <tbody>
-                {result.races.map((r) => (
-                  <tr key={`${r.season}-${r.round}`} style={{ borderBottom: '1px solid var(--f1-dark)' }}>
+                {result.races.map((r, i) => (
+                  <tr
+                    key={`${r.season}-${r.round}`}
+                    className="stagger-row"
+                    style={{ borderBottom: '1px solid var(--f1-dark)', animationDelay: `${i * 15}ms` }}
+                  >
                     <td style={{ padding: '0.4rem' }}>{r.season} {r.event}</td>
                     <td style={{ padding: '0.4rem' }}>{r.driverAPosition ? `P${r.driverAPosition}` : '--'}</td>
                     <td style={{ padding: '0.4rem' }}>{r.driverBPosition ? `P${r.driverBPosition}` : '--'}</td>

@@ -3,10 +3,13 @@ import './index.css'
 import LapViewModal from './components/LapViewModal'
 import LiveTelemetry from './components/LiveTelemetry'
 import HeadToHead from './components/HeadToHead'
+import TrackMap from './components/TrackMap'
+import StartLights from './components/StartLights'
 
 const API_BASE = 'http://localhost:8000'
 
 function App() {
+  const [showStartLights, setShowStartLights] = useState(true)
   const [grid, setGrid] = useState(1)
   const [team, setTeam] = useState('')
   const [driver, setDriver] = useState('')
@@ -102,6 +105,7 @@ function App() {
 
   return (
     <>
+      {showStartLights && <StartLights onDone={() => setShowStartLights(false)} />}
       <h1 style={{ marginBottom: '1rem' }}>Apex F1 Predictor 2026</h1>
 
       <div className="dashboard-grid">
@@ -244,8 +248,12 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {nextRace.forecast.map((f) => (
-                      <tr key={f.abbreviation} style={{ borderBottom: '1px solid var(--f1-dark)' }}>
+                    {nextRace.forecast.map((f, i) => (
+                      <tr
+                        key={f.abbreviation}
+                        className="stagger-row"
+                        style={{ borderBottom: '1px solid var(--f1-dark)', animationDelay: `${i * 30}ms` }}
+                      >
                         <td style={{ padding: '0.5rem' }}>P{f.predictedPosition}</td>
                         <td style={{ padding: '0.5rem' }}>{f.driver}</td>
                         <td style={{ padding: '0.5rem' }}>{f.team}</td>
@@ -267,6 +275,7 @@ function App() {
 
       <HeadToHead drivers={drivers} />
 
+      <TrackMap drivers={drivers} />
       <LiveTelemetry />
 
       {/* Lap View Modal Component */}

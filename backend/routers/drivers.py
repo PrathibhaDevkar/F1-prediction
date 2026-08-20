@@ -17,6 +17,7 @@ def get_drivers(season: int = fastf1_service.CURRENT_SEASON):
             "abbreviation": row["Abbreviation"],
             "fullName": row["FullName"],
             "team": row["TeamName"],
+            "teamColor": f"#{row['TeamColor']}" if row["TeamColor"] else "#e10600",
         }
         for _, row in lineup.iterrows()
     ]

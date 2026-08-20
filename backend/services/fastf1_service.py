@@ -123,4 +123,4 @@ def get_latest_driver_lineup(season: int = CURRENT_SEASON) -> pd.DataFrame:
     session = get_race_session(season, latest_round)
     if session is None or session.results is None or session.results.empty:
         return pd.DataFrame()
-    return session.results[["DriverNumber", "Abbreviation", "FullName", "TeamName"]].copy()
+    return session.results[["DriverNumber", "Abbreviation", "FullName", "TeamName", "TeamColor"]].copy()

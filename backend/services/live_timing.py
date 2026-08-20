@@ -101,6 +101,28 @@ class LiveTelemetryManager:
             print(f"[live_timing] car_data fetch failed: {e}")
             return []
 
+    async def _fetch_location_window(
+        self, client: httpx.AsyncClient, session_key, since: datetime, until: datetime
+    ) -> list:
+        """Same narrow-window approach as car_data — x/y/z track coordinates
+        for every driver, used to draw a live position map."""
+        try:
+            resp = await client.get(
+                f"{OPENF1_BASE}/location",
+                params={
+                    "session_key": session_key,
+                    "date>": since.isoformat(),
+                    "date<": until.isoformat(),
+                },
+                headers=self._headers(),
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            return data if isinstance(data, list) else []
+        except Exception as e:
+            print(f"[live_timing] location fetch failed: {e}")
+            return []
+
     async def _poll_loop(self):
         async with httpx.AsyncClient(timeout=10) as client:
             while True:
@@ -128,17 +150,18 @@ class LiveTelemetryManager:
                         self.buffer = {}
 
                     poll_started_at = datetime.now(timezone.utc)
-                    readings = await self._fetch_car_data_window(
-                        client, session_key, self._since, poll_started_at
+                    readings, positions = await asyncio.gather(
+                        self._fetch_car_data_window(client, session_key, self._since, poll_started_at),
+                        self._fetch_location_window(client, session_key, self._since, poll_started_at),
                     )
                     self._since = poll_started_at
 
-                    if readings:
+                    if readings or positions:
                         self._last_data_at = datetime.now(timezone.utc)
                         for reading in readings:
                             self.buffer[reading["driver_number"]] = reading
                         self.status = "connected"
-                        await self._broadcast({"type": "telemetry", "readings": readings})
+                        await self._broadcast({"type": "telemetry", "readings": readings, "positions": positions})
                     elif self._last_data_at and (
                         datetime.now(timezone.utc) - self._last_data_at
                     ).total_seconds() > NO_DATA_TIMEOUT_SECONDS:
