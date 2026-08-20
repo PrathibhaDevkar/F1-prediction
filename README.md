@@ -8,6 +8,7 @@ Apex F1 Predictor forecasts Formula 1 race finishes using a model trained on rea
 - **Next Race Prediction**: A full-grid forecast for the next upcoming race, generated automatically by the training pipeline — separate from the manual what-if form below.
 - **Prediction Engine**: Enter a grid position, team, and optionally a driver/circuit, to get a predicted finishing position plus win/podium/points probabilities.
 - **Live Telemetry**: Real-time speed/gear/throttle/brake/DRS per driver via [OpenF1](https://openf1.org) while an F1 session is actually in progress — shows a clear "no session live" state the rest of the time (which is most of the time; sessions run a few hours every couple of weeks).
+- **Head-to-Head**: Pick any two drivers, see their real record across every shared race back to 2023.
 - **Autonomous retrain pipeline**: A scheduler checks for newly completed races and retrains the model + refreshes the next-race forecast on its own — no manual script running required.
 
 ## Architecture
@@ -44,5 +45,4 @@ Apex F1 Predictor forecasts Formula 1 race finishes using a model trained on rea
 
 - **Live Weather Integration**: feed real-time weather (rain probability, track temp) into the model.
 - **More features**: pit-stop averages, weather.
-- **Head-to-Head Driver Comparisons**: teammate-vs-teammate analytics per circuit.
 - **Qualifying-triggered forecast refresh**: re-run the next-race forecast once qualifying completes, so "assumed grid" becomes real.

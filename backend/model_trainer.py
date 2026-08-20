@@ -27,6 +27,7 @@ from services.feature_engineering import DEFAULT_QUALI_GAP, RaceHistory
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BACKEND_DIR, "model.pkl")
+RESULTS_CACHE_PATH = os.path.join(BACKEND_DIR, "cache", "race_results.pkl")
 
 NUMERIC_FEATURES = [
     "grid",
@@ -82,9 +83,14 @@ def fetch_and_prepare_data() -> tuple[pd.DataFrame, RaceHistory]:
                     "finish": driver["Position"],
                     "team": team,
                     "driver": abbr,
+                    "driver_name": driver["FullName"],
                     "circuit": circuit,
                     "status": driver["Status"],
                     "quali_gap": quali_gaps.get(abbr, DEFAULT_QUALI_GAP),
+                    "points": driver["Points"],
+                    "season": season,
+                    "round": round_number,
+                    "event": event["EventName"],
                     **rolling,
                 })
             dataset.extend(rows)
@@ -108,10 +114,13 @@ def fetch_and_prepare_data() -> tuple[pd.DataFrame, RaceHistory]:
 
 
 def train_model(df: pd.DataFrame):
-    df = pd.get_dummies(df, columns=CATEGORICAL_FEATURES)
+    # df carries extra metadata (points/season/round/event/driver_name) for
+    # the head-to-head endpoint to reuse — not model inputs, so drop them here.
+    model_df = df[NUMERIC_FEATURES + CATEGORICAL_FEATURES + ["finish"]]
+    model_df = pd.get_dummies(model_df, columns=CATEGORICAL_FEATURES)
 
-    finish = df["finish"]
-    X = df.drop("finish", axis=1)
+    finish = model_df["finish"]
+    X = model_df.drop("finish", axis=1)
     feature_names = X.columns.tolist()
 
     # Chronological split, not random: df is built in race order, so the
@@ -223,6 +232,8 @@ def train_and_save():
     driver_form, team_form = build_form_snapshots(history)
     model_data = save_model(position_model, classifiers, features, driver_form, team_form)
     print(f"Models and {len(features)} feature references saved to model.pkl")
+
+    df[["season", "round", "event", "driver", "driver_name", "team", "grid", "finish", "points"]].to_pickle(RESULTS_CACHE_PATH)
 
     generate_next_race_forecast(model_data, history)
     return model_data
