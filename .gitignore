@@ -8,6 +8,7 @@ venv/
 env/
 ENV/
 backend/cache/
+backend/pipeline_state.db
 
 # OS
 .DS_Store

@@ -3,7 +3,6 @@
 Callable directly (train_and_save()) so the Phase 2 retrain pipeline can
 invoke it without shelling out, as well as runnable as a script.
 """
-import json
 import os
 import pickle
 from datetime import datetime, timezone
@@ -13,11 +12,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
+import db
 from services import fastf1_service, model_service, prediction_service
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BACKEND_DIR, "model.pkl")
-NEXT_RACE_CACHE_PATH = os.path.join(BACKEND_DIR, "cache", "next_race_prediction.json")
 
 
 def fetch_and_prepare_data() -> pd.DataFrame:
@@ -101,14 +100,9 @@ def generate_next_race_forecast(model_data):
         print("Not enough data to forecast the next race yet.")
         return
 
-    os.makedirs(os.path.dirname(NEXT_RACE_CACHE_PATH), exist_ok=True)
-    with open(NEXT_RACE_CACHE_PATH, "w") as f:
-        json.dump({
-            "round": int(next_event["RoundNumber"]),
-            "generatedAt": datetime.now(timezone.utc).isoformat(),
-            "forecast": forecast,
-        }, f, indent=2)
-    print(f"Next-race forecast cached for round {int(next_event['RoundNumber'])}.")
+    round_key = str(int(next_event["RoundNumber"]))
+    db.set_cached_prediction(round_key, forecast, datetime.now(timezone.utc).isoformat())
+    print(f"Next-race forecast cached for round {round_key}.")
 
 
 def train_and_save():

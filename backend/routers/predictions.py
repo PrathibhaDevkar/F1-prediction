@@ -1,16 +1,11 @@
-import json
-import os
-
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+import db
 from services import fastf1_service, model_service, prediction_service
 
 router = APIRouter(prefix="/api", tags=["predictions"])
-
-BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-NEXT_RACE_CACHE_PATH = os.path.join(BACKEND_DIR, "cache", "next_race_prediction.json")
 
 
 class PredictRequest(BaseModel):
@@ -51,16 +46,9 @@ def next_race():
         "date": race_time.isoformat() if race_time else None,
     }
 
-    forecast = None
-    last_updated = None
-    if os.path.exists(NEXT_RACE_CACHE_PATH):
-        try:
-            with open(NEXT_RACE_CACHE_PATH) as f:
-                cache = json.load(f)
-            if cache.get("round") == event_payload["round"]:
-                forecast = cache.get("forecast")
-                last_updated = cache.get("generatedAt")
-        except Exception:
-            pass
+    round_key = str(event_payload["round"])
+    cached = db.get_cached_prediction(round_key)
+    forecast = cached["forecast"] if cached else None
+    last_updated = cached["generatedAt"] if cached else None
 
     return {"event": event_payload, "forecast": forecast, "lastUpdated": last_updated}
