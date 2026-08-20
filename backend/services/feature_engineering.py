@@ -13,6 +13,7 @@ ROLLING_WINDOW = 5
 DNF_WINDOW = 10
 DEFAULT_AVG_FINISH = 10.5  # midpoint of a ~20-car grid — used when there's no history yet
 DEFAULT_DNF_RATE = 0.15  # a reasonable league-average fallback
+DEFAULT_QUALI_GAP = 3.0  # seconds off pole, used when a driver has no lap time on record
 
 FINISHED_STATUSES = {"Finished", "Lapped"}
 

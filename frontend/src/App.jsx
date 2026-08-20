@@ -177,7 +177,7 @@ function App() {
           {loading && <div className="loader"></div>}
           {error && <p style={{ color: '#ff3b30', marginTop: '1rem', fontWeight: 600 }}>{error}</p>}
 
-          {predictionData && predictionData.probabilities && (
+          {predictionData && (
             <div style={{ marginTop: '2rem', textAlign: 'left', animation: 'slideUp 0.5s ease backwards' }}>
               <div className="prediction-item" style={{ marginBottom: '2rem' }}>
                 <span className="position-badge" style={{ fontSize: '1.8rem', width: 'auto', marginRight: '1rem' }}>
@@ -186,15 +186,18 @@ function App() {
                 <span className="team-name" style={{ fontSize: '1.3rem' }}>Predicted Finish</span>
               </div>
 
-              <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Probabilities</h2>
-              {predictionData.probabilities.map((prob, i) => (
-                <div key={i} className="prob-row">
+              {[
+                { label: 'Win', value: predictionData.win_probability },
+                { label: 'Podium', value: predictionData.podium_probability },
+                { label: 'Points', value: predictionData.points_probability },
+              ].map(({ label, value }) => (
+                <div key={label} className="prob-row">
                   <div className="prob-label">
-                    <span>Position {prob.position}</span>
-                    <span style={{ color: 'var(--accent-color)' }}>{(prob.probability * 100).toFixed(1)}%</span>
+                    <span>{label}</span>
+                    <span style={{ color: 'var(--accent-color)' }}>{(value * 100).toFixed(1)}%</span>
                   </div>
                   <div className="prob-bar-bg">
-                    <div className="prob-bar-fill" style={{ width: `${prob.probability * 100}%` }}></div>
+                    <div className="prob-bar-fill" style={{ width: `${value * 100}%` }}></div>
                   </div>
                 </div>
               ))}
@@ -235,6 +238,8 @@ function App() {
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Driver</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Team</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Assumed Grid</th>
+                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Podium</th>
+                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Points</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -244,6 +249,8 @@ function App() {
                         <td style={{ padding: '0.5rem' }}>{f.driver}</td>
                         <td style={{ padding: '0.5rem' }}>{f.team}</td>
                         <td style={{ padding: '0.5rem' }}>P{f.assumedGrid}</td>
+                        <td style={{ padding: '0.5rem' }}>{(f.podiumProbability * 100).toFixed(0)}%</td>
+                        <td style={{ padding: '0.5rem' }}>{(f.pointsProbability * 100).toFixed(0)}%</td>
                       </tr>
                     ))}
                   </tbody>

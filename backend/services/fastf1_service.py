@@ -88,6 +88,32 @@ def get_race_session(season: int, round_number: int, with_laps: bool = False):
         return None
 
 
+def get_qualifying_gaps(season: int, round_number: int) -> dict[str, float]:
+    """Each driver's gap to pole (seconds) from that race weekend's own
+    qualifying session. Missing a time (crash, no lap set) falls back to
+    a fixed 3s penalty rather than being dropped."""
+    try:
+        session = fastf1.get_session(season, round_number, "Q")
+        session.load(laps=False, telemetry=False, weather=False, messages=False)
+        results = session.results
+    except Exception as e:
+        print(f"[fastf1_service] Failed to load quali for {season} round {round_number}: {e}")
+        return {}
+
+    best_times = {}
+    for _, row in results.iterrows():
+        times = [row.get("Q1"), row.get("Q2"), row.get("Q3")]
+        times = [t for t in times if pd.notna(t)]
+        if times:
+            best_times[row["Abbreviation"]] = min(times).total_seconds()
+
+    if not best_times:
+        return {}
+
+    pole_time = min(best_times.values())
+    return {driver: t - pole_time for driver, t in best_times.items()}
+
+
 def get_latest_driver_lineup(season: int = CURRENT_SEASON) -> pd.DataFrame:
     """Driver/team lineup from the most recently completed race of the season."""
     completed = get_completed_events(season)

@@ -22,8 +22,7 @@ def predict(request: PredictRequest):
         raise HTTPException(status_code=500, detail="Model not loaded")
 
     return prediction_service.build_prediction(
-        model_data["model"],
-        model_data["features"],
+        model_data,
         request.grid,
         request.team,
         request.driver,
