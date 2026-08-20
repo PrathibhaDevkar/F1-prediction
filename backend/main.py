@@ -1,10 +1,9 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 import uvicorn
-import pickle
-import pandas as pd
-import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from routers import drivers, predictions, schedule
+from services import model_service
 
 app = FastAPI(title="Apex F1 Predictor API")
 
@@ -16,17 +15,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load Model
-MODEL_PATH = "model.pkl"
-model_data = None
-if os.path.exists(MODEL_PATH):
-    with open(MODEL_PATH, "rb") as f:
-        model_data = pickle.load(f)
+app.include_router(schedule.router)
+app.include_router(drivers.router)
+app.include_router(predictions.router)
 
-
-class PredictRequest(BaseModel):
-    grid: int
-    team: str
+model_service.load_model()
 
 
 @app.get("/")
@@ -36,45 +29,7 @@ def read_root():
 
 @app.get("/api/status")
 def status():
-    return {"status": "ok", "model_loaded": model_data is not None}
-
-
-@app.post("/api/predict")
-def predict(request: PredictRequest):
-    if not model_data:
-        raise HTTPException(status_code=500, detail="Model not loaded")
-
-    model = model_data["model"]
-    features = model_data["features"]
-
-    # Create input dataframe
-    input_data = pd.DataFrame([
-        {"grid": request.grid, f"team_{request.team}": 1}
-    ])
-
-    # Fill missing team columns to match training features
-    for col in features:
-        if col not in input_data.columns:
-            input_data[col] = 0
-
-    # Ensure column order matches
-    input_data = input_data[features]
-
-    # Predict and probabilities
-    prediction = model.predict(input_data)
-
-    # Calculate probabilities
-    proba = model.predict_proba(input_data)[0]
-    classes = model.classes_
-    prob_list = []
-    for cls, prob in zip(classes, proba):
-        prob_list.append({"position": int(cls), "probability": float(prob)})
-
-    # Sort and take top 5
-    prob_list.sort(key=lambda x: x["probability"], reverse=True)
-    top_5 = prob_list[:5]
-
-    return {"predicted_position": int(prediction[0]), "probabilities": top_5}
+    return {"status": "ok", "model_loaded": model_service.get_model() is not None}
 
 
 if __name__ == "__main__":

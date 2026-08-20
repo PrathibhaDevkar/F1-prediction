@@ -1,53 +1,67 @@
-import fastf1
+"""Trains the finishing-position classifier on real historical F1 results.
+
+Callable directly (train_and_save()) so the Phase 2 retrain pipeline can
+invoke it without shelling out, as well as runnable as a script.
+"""
+import json
+import os
+import pickle
+from datetime import datetime, timezone
+
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-import pickle
-import os
+from sklearn.model_selection import train_test_split
 
-# Enable fastf1 cache
-os.makedirs("cache", exist_ok=True)
-fastf1.Cache.enable_cache("cache")
+from services import fastf1_service, model_service, prediction_service
+
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BACKEND_DIR, "model.pkl")
+NEXT_RACE_CACHE_PATH = os.path.join(BACKEND_DIR, "cache", "next_race_prediction.json")
 
 
-def fetch_and_prepare_data():
+def fetch_and_prepare_data() -> pd.DataFrame:
+    """Every completed race from EARLIEST_TRAINING_SEASON through the
+    current season's most recent completed round."""
     dataset = []
-    # Fetch data for a few races to build a quick model
-    # Doing 2023 races 1 to 5 for speed
-    print("Fetching historical F1 data...")
-    for round_number in range(1, 6):
-        try:
-            print(f"Loading 2023 Round {round_number}...")
-            session = fastf1.get_session(2023, round_number, "R")
-            session.load(telemetry=False, weather=False, messages=False)
-            results = session.results
-            for idx, driver in results.iterrows():
-                grid = driver["GridPosition"]
-                finish = driver["Position"]
-                team = driver["TeamName"]
-                dataset.append({"grid": grid, "finish": finish, "team": team})
-        except Exception as e:
-            print(f"Skipping round {round_number} due to error: {e}")
+    current_year = datetime.now(timezone.utc).year
+
+    for season in range(fastf1_service.EARLIEST_TRAINING_SEASON, current_year + 1):
+        completed = fastf1_service.get_completed_events(season)
+        if not completed:
+            continue
+        print(f"Season {season}: {len(completed)} completed race(s)")
+
+        for event in completed:
+            round_number = int(event["RoundNumber"])
+            session = fastf1_service.get_race_session(season, round_number)
+            if session is None or session.results is None or session.results.empty:
+                print(f"  Skipping {season} round {round_number}: no results")
+                continue
+
+            circuit = event.get("Location", "")
+            for _, driver in session.results.iterrows():
+                dataset.append({
+                    "grid": driver["GridPosition"],
+                    "finish": driver["Position"],
+                    "team": driver["TeamName"],
+                    "driver": driver["Abbreviation"],
+                    "circuit": circuit,
+                })
 
     df = pd.DataFrame(dataset)
+    if df.empty:
+        return df
+
     df["finish"] = pd.to_numeric(df["finish"], errors="coerce")
+    df["grid"] = pd.to_numeric(df["grid"], errors="coerce")
     df.dropna(subset=["finish", "grid"], inplace=True)
     return df
 
 
-def train_model():
-    df = fetch_and_prepare_data()
-    if df.empty:
-        print("Error: No data fetched.")
-        return
+def train_model(df: pd.DataFrame):
+    df = pd.get_dummies(df, columns=["team", "driver", "circuit"])
 
-    print(f"Dataset compiled with {len(df)} records.")
-
-    # Advanced: One-hot encode the teams
-    df = pd.get_dummies(df, columns=["team"])
-
-    # Prepare features and target
     y = df["finish"]
     X = df.drop("finish", axis=1)
 
@@ -55,21 +69,65 @@ def train_model():
         X, y, test_size=0.2, random_state=42
     )
 
-    print("Training Random Forest...")
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
     preds = model.predict(X_test)
-    acc = accuracy_score(y_test, preds)
-    print(f"Model accuracy: {acc * 100:.2f}%")
+    accuracy = accuracy_score(y_test, preds)
 
-    # Save model and the feature columns for later inference
-    model_data = {"model": model, "features": X.columns.tolist()}
+    return model, X.columns.tolist(), accuracy
 
-    with open("model.pkl", "wb") as f:
+
+def save_model(model, features):
+    model_data = {"model": model, "features": features}
+    tmp_path = MODEL_PATH + ".tmp"
+    with open(tmp_path, "wb") as f:
         pickle.dump(model_data, f)
-    print("Model and feature references saved to model.pkl")
+    os.replace(tmp_path, MODEL_PATH)
+    model_service.reload_model()
+    return model_data
+
+
+def generate_next_race_forecast(model_data):
+    """Regenerate the cached next-race forecast; no-ops quietly if there's
+    no upcoming race or not enough data to build one."""
+    next_event = fastf1_service.get_next_event()
+    if next_event is None:
+        print("No upcoming race found — skipping next-race forecast.")
+        return
+
+    forecast = prediction_service.predict_next_race(model_data, next_event)
+    if forecast is None:
+        print("Not enough data to forecast the next race yet.")
+        return
+
+    os.makedirs(os.path.dirname(NEXT_RACE_CACHE_PATH), exist_ok=True)
+    with open(NEXT_RACE_CACHE_PATH, "w") as f:
+        json.dump({
+            "round": int(next_event["RoundNumber"]),
+            "generatedAt": datetime.now(timezone.utc).isoformat(),
+            "forecast": forecast,
+        }, f, indent=2)
+    print(f"Next-race forecast cached for round {int(next_event['RoundNumber'])}.")
+
+
+def train_and_save():
+    print("Fetching real historical F1 data (this can take a while on a cold cache)...")
+    df = fetch_and_prepare_data()
+    if df.empty:
+        print("Error: No data fetched.")
+        return None
+
+    print(f"Dataset compiled with {len(df)} records.")
+    model, features, accuracy = train_model(df)
+    print(f"Model accuracy: {accuracy * 100:.2f}%")
+
+    model_data = save_model(model, features)
+    print(f"Model and {len(features)} feature references saved to model.pkl")
+
+    generate_next_race_forecast(model_data)
+    return model_data
 
 
 if __name__ == "__main__":
-    train_model()
+    train_and_save()
