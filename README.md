@@ -2,6 +2,10 @@
 
 Apex F1 Predictor forecasts Formula 1 race finishes using a model trained on real historical race data, kept up to date automatically as new races complete — plus a live telemetry view for whenever a session is actually running.
 
+**Live app**: https://frontend-snowy-alpha-65.vercel.app · **API**: https://f1-predictor-api-jo7o.onrender.com
+
+Backend runs on Render's free tier, which has no persistent disk — the first request after a period of inactivity (~15 min) triggers a cold start (~1 min) and Next Race Prediction / Head-to-Head may take a few minutes to repopulate as the model retrains from a cold cache. Everything else (predictions, calendar, drivers) works instantly since the model itself ships pre-trained in the repo.
+
 ## Key Features
 
 - **Real season calendar & results**: The calendar, driver/team lineup, and race results (winner, podium, laps) all come from [FastF1](https://github.com/theOehrly/Fast-F1), not hardcoded data.
