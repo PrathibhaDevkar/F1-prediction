@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { WS_URL } from '../config';
 
-const WS_URL = 'ws://localhost:8000/ws/live-timing';
 const MAX_HISTORY_POINTS = 60;
 
 const STATUS_COPY = {

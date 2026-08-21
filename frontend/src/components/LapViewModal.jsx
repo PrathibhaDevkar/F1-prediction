@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './LapViewModal.css';
+import { API_BASE } from '../config';
 
-const API_BASE = 'http://localhost:8000';
 const SEASON = 2026;
 
 export default function LapViewModal({ race, onClose }) {

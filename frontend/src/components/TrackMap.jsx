@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { WS_URL } from '../config';
 
-const WS_URL = 'ws://localhost:8000/ws/live-timing';
 const MAX_TRAIL_POINTS = 3000;
 
 export default function TrackMap({ drivers }) {

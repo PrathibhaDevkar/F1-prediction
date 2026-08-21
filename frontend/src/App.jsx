@@ -5,8 +5,7 @@ import LiveTelemetry from './components/LiveTelemetry'
 import HeadToHead from './components/HeadToHead'
 import TrackMap from './components/TrackMap'
 import StartLights from './components/StartLights'
-
-const API_BASE = 'http://localhost:8000'
+import { API_BASE } from './config'
 
 function App() {
   const [showStartLights, setShowStartLights] = useState(true)
