@@ -15,6 +15,7 @@ from services import model_service
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    db.seed_if_empty()
     model_service.load_model()
     start_scheduler()
     live.manager.start()

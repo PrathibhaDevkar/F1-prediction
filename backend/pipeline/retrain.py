@@ -32,7 +32,7 @@ def check_and_process_new_results():
     print(f"[pipeline] New race detected: round {latest_round} "
           f"(previously processed: {last_processed_round}). Retraining...")
 
-    model_data = model_trainer.train_and_save()
+    model_data, next_race = model_trainer.train_and_save()
     if model_data is None:
         db.set_state("last_run_status", "retrain_failed")
         print("[pipeline] Retrain failed: no data fetched.")
@@ -41,5 +41,6 @@ def check_and_process_new_results():
     db.set_state("last_processed_round", latest_round)
     db.set_state("last_run_status", "ok")
     db.set_state("model_trained_at", datetime.now(timezone.utc).isoformat())
+    model_trainer.write_seed_state(next_race)
     print(f"[pipeline] Retrain complete. last_processed_round={latest_round}.")
     return {"status": "ok", "latest_round": latest_round}

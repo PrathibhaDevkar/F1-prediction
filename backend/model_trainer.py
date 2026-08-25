@@ -10,6 +10,7 @@ most people than a raw position number.
 Callable directly (train_and_save()) so the Phase 2 retrain pipeline can
 invoke it without shelling out, as well as runnable as a script.
 """
+import json
 import os
 import pickle
 from datetime import datetime, timezone
@@ -28,6 +29,12 @@ from services.feature_engineering import DEFAULT_QUALI_GAP, RaceHistory
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BACKEND_DIR, "model.pkl")
 RESULTS_CACHE_PATH = os.path.join(BACKEND_DIR, "cache", "race_results.pkl")
+CHECKPOINT_PATH = os.path.join(BACKEND_DIR, "cache", "training_checkpoint.pkl")
+# Committed to git (unlike pipeline_state.db/cache/, which are gitignored
+# runtime state) so a fresh deploy with no persistent disk - e.g. Render's
+# free tier - starts warm instead of needing a full retrain before it can
+# answer anything. See db.seed_if_empty().
+SEED_STATE_PATH = os.path.join(BACKEND_DIR, "seed_state.json")
 
 NUMERIC_FEATURES = [
     "grid",
@@ -39,27 +46,60 @@ NUMERIC_FEATURES = [
 CATEGORICAL_FEATURES = ["team", "driver", "circuit"]
 
 
+def _load_checkpoint() -> tuple[list[dict], RaceHistory, set[tuple[int, int]]]:
+    """Rows/history/processed-(season, round) pairs from a prior run, so a
+    retrain only has to fetch newly-completed races instead of re-walking
+    every season from scratch. Falls back to empty state if there's no
+    checkpoint yet, or it fails to load for any reason."""
+    if not os.path.exists(CHECKPOINT_PATH):
+        return [], RaceHistory(), set()
+    try:
+        with open(CHECKPOINT_PATH, "rb") as f:
+            rows, history, processed = pickle.load(f)
+        print(f"Resuming from checkpoint: {len(processed)} race(s) already processed.")
+        return rows, history, processed
+    except Exception as e:
+        print(f"Could not load training checkpoint, starting fresh: {e}")
+        return [], RaceHistory(), set()
+
+
+def _save_checkpoint(rows: list[dict], history: RaceHistory, processed: set[tuple[int, int]]):
+    os.makedirs(os.path.dirname(CHECKPOINT_PATH), exist_ok=True)
+    tmp_path = CHECKPOINT_PATH + ".tmp"
+    with open(tmp_path, "wb") as f:
+        pickle.dump((rows, history, processed), f)
+    os.replace(tmp_path, CHECKPOINT_PATH)
+
+
 def fetch_and_prepare_data() -> tuple[pd.DataFrame, RaceHistory]:
     """Every completed race from EARLIEST_TRAINING_SEASON through the
     current season's most recent completed round, in chronological order,
     with each row's rolling-form features computed from ONLY prior races.
 
+    Resumes from a checkpoint (cache/training_checkpoint.pkl): races already
+    present there are skipped entirely rather than re-fetched, so a retrain
+    triggered by one new race only does the expensive per-session fetch for
+    that one race, not the whole history again.
+
     Returns the DataFrame plus the fully-built RaceHistory (reflecting
     every processed race), which the caller can reuse to compute the same
     features for the next, not-yet-run race.
     """
-    dataset = []
-    history = RaceHistory()
+    dataset, history, processed = _load_checkpoint()
     current_year = datetime.now(timezone.utc).year
+    new_races = False
 
     for season in range(fastf1_service.EARLIEST_TRAINING_SEASON, current_year + 1):
         completed = fastf1_service.get_completed_events(season)
         if not completed:
             continue
-        print(f"Season {season}: {len(completed)} completed race(s)")
 
         for event in completed:
             round_number = int(event["RoundNumber"])
+            if (season, round_number) in processed:
+                continue
+
+            print(f"Season {season} round {round_number}: fetching (new)")
             session = fastf1_service.get_race_session(season, round_number)
             if session is None or session.results is None or session.results.empty:
                 print(f"  Skipping {season} round {round_number}: no results")
@@ -101,6 +141,12 @@ def fetch_and_prepare_data() -> tuple[pd.DataFrame, RaceHistory]:
                 history.record_result(
                     driver["Abbreviation"], driver["TeamName"], driver["Position"], driver["Status"]
                 )
+
+            processed.add((season, round_number))
+            new_races = True
+
+    if new_races:
+        _save_checkpoint(dataset, history, processed)
 
     df = pd.DataFrame(dataset)
     if df.empty:
@@ -194,30 +240,56 @@ def save_model(position_model, classifiers, features, driver_form=None, team_for
     return model_data
 
 
-def generate_next_race_forecast(model_data, history: RaceHistory):
+def generate_next_race_forecast(model_data, history: RaceHistory) -> dict | None:
     """Regenerate the cached next-race forecast; no-ops quietly if there's
-    no upcoming race or not enough data to build one."""
+    no upcoming race or not enough data to build one. Returns the cached
+    record (round_key/forecast/generatedAt) so the caller can also persist
+    it into the committed seed file, or None if nothing was generated."""
     next_event = fastf1_service.get_next_event()
     if next_event is None:
         print("No upcoming race found — skipping next-race forecast.")
-        return
+        return None
 
     forecast = prediction_service.predict_next_race(model_data, next_event, history=history)
     if forecast is None:
         print("Not enough data to forecast the next race yet.")
-        return
+        return None
 
     round_key = str(int(next_event["RoundNumber"]))
-    db.set_cached_prediction(round_key, forecast, datetime.now(timezone.utc).isoformat())
+    generated_at = datetime.now(timezone.utc).isoformat()
+    db.set_cached_prediction(round_key, forecast, generated_at)
     print(f"Next-race forecast cached for round {round_key}.")
+    return {"round_key": round_key, "forecast": forecast, "generatedAt": generated_at}
 
 
-def train_and_save():
+def write_seed_state(next_race: dict | None):
+    """Snapshot pipeline_state.db's key fields + the next-race forecast
+    into a small JSON file that (unlike pipeline_state.db itself) is meant
+    to be committed to git. On a platform with no persistent disk, this is
+    what lets a fresh deploy answer real requests immediately instead of
+    running a full retrain before it has anything to say. See
+    db.seed_if_empty(), called at app startup."""
+    state = {
+        "last_processed_round": db.get_state("last_processed_round"),
+        "model_trained_at": db.get_state("model_trained_at"),
+        "next_race_forecast": next_race,
+    }
+    tmp_path = SEED_STATE_PATH + ".tmp"
+    with open(tmp_path, "w") as f:
+        json.dump(state, f, indent=2)
+    os.replace(tmp_path, SEED_STATE_PATH)
+    print(f"Seed state written to {SEED_STATE_PATH}")
+
+
+def train_and_save() -> tuple[dict | None, dict | None]:
+    """Returns (model_data, next_race) — next_race is the record returned
+    by generate_next_race_forecast(), or None if model_data is None (fetch
+    failed) or there was nothing to forecast."""
     print("Fetching real historical F1 data (this can take a while on a cold cache)...")
     df, history = fetch_and_prepare_data()
     if df.empty:
         print("Error: No data fetched.")
-        return None
+        return None, None
 
     print(f"Dataset compiled with {len(df)} records.")
     position_model, classifiers, features, metrics = train_model(df)
@@ -235,8 +307,8 @@ def train_and_save():
 
     df[["season", "round", "event", "driver", "driver_name", "team", "grid", "finish", "points"]].to_pickle(RESULTS_CACHE_PATH)
 
-    generate_next_race_forecast(model_data, history)
-    return model_data
+    next_race = generate_next_race_forecast(model_data, history)
+    return model_data, next_race
 
 
 if __name__ == "__main__":

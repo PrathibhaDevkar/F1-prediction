@@ -8,6 +8,7 @@ from contextlib import contextmanager
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BACKEND_DIR, "pipeline_state.db")
+SEED_STATE_PATH = os.path.join(BACKEND_DIR, "seed_state.json")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS pipeline_state (
@@ -74,6 +75,39 @@ def get_cached_prediction(round_key: str):
         if not row:
             return None
         return {"forecast": json.loads(row[0]), "generatedAt": row[1]}
+
+
+def seed_if_empty():
+    """On a fresh pipeline_state.db with no last_processed_round yet - e.g.
+    right after a cold start on a platform with no persistent disk, where
+    the db is recreated empty every time - seed it from the committed
+    seed_state.json snapshot so the API has real data immediately instead
+    of returning nulls until the next full retrain finishes. The scheduler
+    still runs normally afterward and will pick up anything newer.
+    """
+    if get_state("last_processed_round") is not None:
+        return
+
+    if not os.path.exists(SEED_STATE_PATH):
+        return
+
+    try:
+        with open(SEED_STATE_PATH) as f:
+            seed = json.load(f)
+    except Exception as e:
+        print(f"[db] Could not read {SEED_STATE_PATH}, skipping seed: {e}")
+        return
+
+    if seed.get("last_processed_round") is not None:
+        set_state("last_processed_round", seed["last_processed_round"])
+    if seed.get("model_trained_at"):
+        set_state("model_trained_at", seed["model_trained_at"])
+
+    forecast = seed.get("next_race_forecast")
+    if forecast:
+        set_cached_prediction(forecast["round_key"], forecast["forecast"], forecast["generatedAt"])
+
+    print(f"[db] Seeded pipeline state from {SEED_STATE_PATH}")
 
 
 init_db()
