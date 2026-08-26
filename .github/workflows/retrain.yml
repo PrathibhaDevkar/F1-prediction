@@ -1,0 +1,56 @@
+name: Retrain F1 model
+
+# Keeps the deployed model + next-race forecast fresh by running the same
+# retrain pipeline the app runs internally, but here it can commit the
+# result. Render's free tier has no persistent disk, so without this the
+# live backend would have to redo a full retrain from a cold cache on
+# every spin-down/spin-up before it could answer anything - this workflow
+# is what makes it start warm instead.
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Persists FastF1's own HTTP cache plus our training checkpoint
+      # (backend/cache/training_checkpoint.pkl) across scheduled runs, so
+      # each run only fetches whatever race is newly completed instead of
+      # re-walking every season since 2023.
+      - name: Cache FastF1 data + training checkpoint
+        uses: actions/cache@v4
+        with:
+          path: backend/cache
+          key: f1-training-cache-v1
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run retrain pipeline
+        working-directory: backend
+        run: |
+          python -c "
+          import db
+          from pipeline.retrain import check_and_process_new_results
+          result = check_and_process_new_results()
+          print('Pipeline result:', result)
+          "
+
+      - name: Commit updated model + seed state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/model.pkl backend/seed_state.json
+          git diff --cached --quiet || git commit -m "Auto-retrain: refresh model and next-race forecast"
+          git push
