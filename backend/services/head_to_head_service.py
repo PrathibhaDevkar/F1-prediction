@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RESULTS_CACHE_PATH = os.path.join(BACKEND_DIR, "cache", "race_results.pkl")
+RESULTS_CACHE_PATH = os.path.join(BACKEND_DIR, "race_results.pkl")
 
 
 def compare_drivers(driver_a: str, driver_b: str) -> dict | None:
