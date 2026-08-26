@@ -11,6 +11,7 @@
         "assumedGrid": 1,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 3,
+        "winProbability": 0.25610914034847393,
         "podiumProbability": 0.8456772116588847,
         "pointsProbability": 0.9937405161191561
       },
@@ -21,6 +22,7 @@
         "assumedGrid": 3,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 5,
+        "winProbability": 0.23458381261554145,
         "podiumProbability": 0.48654521172766657,
         "pointsProbability": 0.8157838821736878
       },
@@ -31,6 +33,7 @@
         "assumedGrid": 5,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 6,
+        "winProbability": 0.000441703432454719,
         "podiumProbability": 0.24310862685608864,
         "pointsProbability": 0.9338591022283514
       },
@@ -41,6 +44,7 @@
         "assumedGrid": 6,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 6,
+        "winProbability": 0.0008490294628816403,
         "podiumProbability": 0.03701479861766074,
         "pointsProbability": 0.9613735918969732
       },
@@ -51,6 +55,7 @@
         "assumedGrid": 7,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 6,
+        "winProbability": 0.0021418402537798672,
         "podiumProbability": 0.0007656462421693585,
         "pointsProbability": 0.970327000610354
       },
@@ -61,6 +66,7 @@
         "assumedGrid": 8,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 8,
+        "winProbability": 0.0010462483083854355,
         "podiumProbability": 0.0007398223365390006,
         "pointsProbability": 0.8196527199620813
       },
@@ -71,6 +77,7 @@
         "assumedGrid": 2,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 9,
+        "winProbability": 0.005346140473303264,
         "podiumProbability": 0.2157220310717928,
         "pointsProbability": 0.9534399481530624
       },
@@ -81,6 +88,7 @@
         "assumedGrid": 4,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 9,
+        "winProbability": 0.002442296098604592,
         "podiumProbability": 0.09951739014955262,
         "pointsProbability": 0.8629879371783429
       },
@@ -91,6 +99,7 @@
         "assumedGrid": 13,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 12,
+        "winProbability": 4.855273262455451e-06,
         "podiumProbability": 0.0011034432134628535,
         "pointsProbability": 0.2324118150989301
       },
@@ -101,6 +110,7 @@
         "assumedGrid": 9,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 12,
+        "winProbability": 6.999539770440607e-06,
         "podiumProbability": 0.00011941990981001993,
         "pointsProbability": 0.4971099220530423
       },
@@ -111,6 +121,7 @@
         "assumedGrid": 12,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 13,
+        "winProbability": 6.371299395741384e-06,
         "podiumProbability": 4.7103168701360816e-05,
         "pointsProbability": 0.08980595326737814
       },
@@ -121,6 +132,7 @@
         "assumedGrid": 10,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 13,
+        "winProbability": 6.863701051678995e-06,
         "podiumProbability": 5.223925383495893e-05,
         "pointsProbability": 0.20961002437226842
       },
@@ -131,6 +143,7 @@
         "assumedGrid": 11,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 14,
+        "winProbability": 6.1749023455947995e-06,
         "podiumProbability": 0.00017482036272168823,
         "pointsProbability": 0.08424768155294679
       },
@@ -141,6 +154,7 @@
         "assumedGrid": 19,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 14,
+        "winProbability": 5.054467096628681e-06,
         "podiumProbability": 1.3198809494856354e-05,
         "pointsProbability": 0.0035557754852309806
       },
@@ -151,6 +165,7 @@
         "assumedGrid": 20,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 14,
+        "winProbability": 5.054459027917667e-06,
         "podiumProbability": 1.2392941810653428e-05,
         "pointsProbability": 0.005766914100473167
       },
@@ -161,6 +176,7 @@
         "assumedGrid": 22,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 16,
+        "winProbability": 4.990755703704009e-06,
         "podiumProbability": 1.4183545169687884e-05,
         "pointsProbability": 0.001429127484464879
       },
@@ -171,6 +187,7 @@
         "assumedGrid": 16,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 16,
+        "winProbability": 5.054459027917667e-06,
         "podiumProbability": 1.0282039029929427e-05,
         "pointsProbability": 0.005451364305706561
       },
@@ -181,6 +198,7 @@
         "assumedGrid": 21,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 16,
+        "winProbability": 5.054467096628681e-06,
         "podiumProbability": 1.2365232474108216e-05,
         "pointsProbability": 0.0019448103501098289
       },
@@ -191,6 +209,7 @@
         "assumedGrid": 15,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 16,
+        "winProbability": 6.175021619711083e-06,
         "podiumProbability": 1.1237009985995967e-05,
         "pointsProbability": 0.014015613499701894
       },
@@ -201,6 +220,7 @@
         "assumedGrid": 18,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 17,
+        "winProbability": 5.054459027917667e-06,
         "podiumProbability": 1.74731079005063e-05,
         "pointsProbability": 0.0030437177004447023
       },
@@ -211,6 +231,7 @@
         "assumedGrid": 14,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 17,
+        "winProbability": 5.520833695915839e-06,
         "podiumProbability": 3.531666464210338e-05,
         "pointsProbability": 0.024044515933598798
       },
@@ -221,10 +242,11 @@
         "assumedGrid": 17,
         "assumedGridSource": "grid from round 12",
         "predictedPosition": 18,
+        "winProbability": 6.6618980881718956e-06,
         "podiumProbability": 1.5845029564620688e-05,
         "pointsProbability": 0.0016630961380539454
       }
     ],
-    "generatedAt": "2026-08-25T00:17:00.576869+00:00"
+    "generatedAt": "2026-08-26T02:15:26.098004+00:00"
   }
 }

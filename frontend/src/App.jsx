@@ -242,6 +242,7 @@ function App() {
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Driver</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Team</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Assumed Grid</th>
+                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Win</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Podium</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Points</th>
                     </tr>
@@ -257,6 +258,7 @@ function App() {
                         <td style={{ padding: '0.5rem' }}>{f.driver}</td>
                         <td style={{ padding: '0.5rem' }}>{f.team}</td>
                         <td style={{ padding: '0.5rem' }}>P{f.assumedGrid}</td>
+                        <td style={{ padding: '0.5rem' }}>{(f.winProbability * 100).toFixed(0)}%</td>
                         <td style={{ padding: '0.5rem' }}>{(f.podiumProbability * 100).toFixed(0)}%</td>
                         <td style={{ padding: '0.5rem' }}>{(f.pointsProbability * 100).toFixed(0)}%</td>
                       </tr>

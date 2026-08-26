@@ -117,6 +117,7 @@ def predict_next_race(
             "assumedGrid": int(grid),
             "assumedGridSource": f"grid from round {last_round}",
             "predictedPosition": result["predicted_position"],
+            "winProbability": result["win_probability"],
             "podiumProbability": result["podium_probability"],
             "pointsProbability": result["points_probability"],
         })
