@@ -1,5 +1,252 @@
 {
   "last_processed_round": "12",
-  "model_trained_at": "2026-08-26T06:34:18.162770+00:00",
-  "next_race_forecast": null
+  "model_trained_at": "2026-08-26T12:32:52.252117+00:00",
+  "next_race_forecast": {
+    "round_key": "13",
+    "forecast": [
+      {
+        "driver": "Lando Norris",
+        "abbreviation": "NOR",
+        "team": "McLaren",
+        "assumedGrid": 1,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 3,
+        "winProbability": 0.4631220299493133,
+        "podiumProbability": 0.8990482545727007,
+        "pointsProbability": 0.9959217694771049
+      },
+      {
+        "driver": "Andrea Kimi Antonelli",
+        "abbreviation": "ANT",
+        "team": "Mercedes",
+        "assumedGrid": 3,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 6,
+        "winProbability": 0.20633585857605122,
+        "podiumProbability": 0.28590248468330004,
+        "pointsProbability": 0.8639405413361912
+      },
+      {
+        "driver": "Lewis Hamilton",
+        "abbreviation": "HAM",
+        "team": "Ferrari",
+        "assumedGrid": 5,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 6,
+        "winProbability": 0.0006087891399596163,
+        "podiumProbability": 0.47842362857167053,
+        "pointsProbability": 0.9542555316873689
+      },
+      {
+        "driver": "Charles Leclerc",
+        "abbreviation": "LEC",
+        "team": "Ferrari",
+        "assumedGrid": 6,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 6,
+        "winProbability": 0.00031546679303128184,
+        "podiumProbability": 0.18901414909118147,
+        "pointsProbability": 0.9757751244742752
+      },
+      {
+        "driver": "Max Verstappen",
+        "abbreviation": "VER",
+        "team": "Red Bull",
+        "assumedGrid": 7,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 7,
+        "winProbability": 0.0005578123833844459,
+        "podiumProbability": 0.0022988437830534078,
+        "pointsProbability": 0.912629266404931
+      },
+      {
+        "driver": "Liam Lawson",
+        "abbreviation": "LAW",
+        "team": "Red Bull",
+        "assumedGrid": 8,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 8,
+        "winProbability": 0.0004488799547120929,
+        "podiumProbability": 0.003109572797087471,
+        "pointsProbability": 0.701035294296863
+      },
+      {
+        "driver": "Oscar Piastri",
+        "abbreviation": "PIA",
+        "team": "McLaren",
+        "assumedGrid": 4,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 9,
+        "winProbability": 0.0032035583623882106,
+        "podiumProbability": 0.10566822489966064,
+        "pointsProbability": 0.8502839798377486
+      },
+      {
+        "driver": "George Russell",
+        "abbreviation": "RUS",
+        "team": "Mercedes",
+        "assumedGrid": 2,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 10,
+        "winProbability": 0.008478352995343589,
+        "podiumProbability": 0.09733084591732072,
+        "pointsProbability": 0.9536512225475199
+      },
+      {
+        "driver": "Nico H\u00fclkenberg",
+        "abbreviation": "HUL",
+        "team": "Audi",
+        "assumedGrid": 13,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 10,
+        "winProbability": 2.139015796514129e-06,
+        "podiumProbability": 0.006781823477991205,
+        "pointsProbability": 0.29913734992019375
+      },
+      {
+        "driver": "Gabriel Bortoleto",
+        "abbreviation": "BOR",
+        "team": "Audi",
+        "assumedGrid": 9,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 11,
+        "winProbability": 3.894602842220909e-06,
+        "podiumProbability": 0.0001112270770887375,
+        "pointsProbability": 0.39578010550746273
+      },
+      {
+        "driver": "Pierre Gasly",
+        "abbreviation": "GAS",
+        "team": "Alpine F1 Team",
+        "assumedGrid": 11,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 12,
+        "winProbability": 3.0705340082275005e-06,
+        "podiumProbability": 0.0005255158857653136,
+        "pointsProbability": 0.13774757971830784
+      },
+      {
+        "driver": "Arvid Lindblad",
+        "abbreviation": "LIN",
+        "team": "RB F1 Team",
+        "assumedGrid": 10,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 12,
+        "winProbability": 4.124050789444013e-06,
+        "podiumProbability": 7.853585251218679e-05,
+        "pointsProbability": 0.2510107461876807
+      },
+      {
+        "driver": "Yuki Tsunoda",
+        "abbreviation": "TSU",
+        "team": "RB F1 Team",
+        "assumedGrid": 12,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 13,
+        "winProbability": 2.6635904819950226e-06,
+        "podiumProbability": 6.598952737009143e-05,
+        "pointsProbability": 0.11052218926550861
+      },
+      {
+        "driver": "Esteban Ocon",
+        "abbreviation": "OCO",
+        "team": "Haas F1 Team",
+        "assumedGrid": 15,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 15,
+        "winProbability": 2.7577677796626735e-06,
+        "podiumProbability": 1.0992444734555949e-05,
+        "pointsProbability": 0.027767652734187312
+      },
+      {
+        "driver": "Oliver Bearman",
+        "abbreviation": "BEA",
+        "team": "Haas F1 Team",
+        "assumedGrid": 20,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 15,
+        "winProbability": 2.2537525670555094e-06,
+        "podiumProbability": 1.354181505756971e-05,
+        "pointsProbability": 0.02300442345769055
+      },
+      {
+        "driver": "Franco Colapinto",
+        "abbreviation": "COL",
+        "team": "Alpine F1 Team",
+        "assumedGrid": 14,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 16,
+        "winProbability": 2.6892637100929438e-06,
+        "podiumProbability": 5.549440100754815e-05,
+        "pointsProbability": 0.024048940679203087
+      },
+      {
+        "driver": "Alexander Albon",
+        "abbreviation": "ALB",
+        "team": "Williams",
+        "assumedGrid": 16,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 16,
+        "winProbability": 2.2610621838936083e-06,
+        "podiumProbability": 1.3464400712240968e-05,
+        "pointsProbability": 0.01259748868068639
+      },
+      {
+        "driver": "Lance Stroll",
+        "abbreviation": "STR",
+        "team": "Aston Martin",
+        "assumedGrid": 19,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 16,
+        "winProbability": 2.2540960128572173e-06,
+        "podiumProbability": 1.537558656252205e-05,
+        "pointsProbability": 0.0032192283779934835
+      },
+      {
+        "driver": "Fernando Alonso",
+        "abbreviation": "ALO",
+        "team": "Aston Martin",
+        "assumedGrid": 18,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 17,
+        "winProbability": 2.261232049895747e-06,
+        "podiumProbability": 5.306556631197568e-05,
+        "pointsProbability": 0.0024848445688508292
+      },
+      {
+        "driver": "Sergio P\u00e9rez",
+        "abbreviation": "PER",
+        "team": "Cadillac F1 Team",
+        "assumedGrid": 22,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 17,
+        "winProbability": 2.2537525670555094e-06,
+        "podiumProbability": 1.3397403442119667e-05,
+        "pointsProbability": 0.004432572980507036
+      },
+      {
+        "driver": "Carlos Sainz",
+        "abbreviation": "SAI",
+        "team": "Williams",
+        "assumedGrid": 17,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 18,
+        "winProbability": 3.7571399923620547e-06,
+        "podiumProbability": 1.7400600646726773e-05,
+        "pointsProbability": 0.0013784345941955962
+      },
+      {
+        "driver": "Valtteri Bottas",
+        "abbreviation": "BOT",
+        "team": "Cadillac F1 Team",
+        "assumedGrid": 21,
+        "assumedGridSource": "grid from round 12",
+        "predictedPosition": 18,
+        "winProbability": 2.2537525670555094e-06,
+        "podiumProbability": 1.3397403442119667e-05,
+        "pointsProbability": 0.004036672839648268
+      }
+    ],
+    "generatedAt": "2026-08-26T12:32:52.247638+00:00"
+  }
 }
