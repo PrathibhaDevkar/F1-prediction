@@ -1,6 +1,6 @@
 {
   "last_processed_round": "12",
-  "model_trained_at": "2026-08-27T17:07:20.491457+00:00",
+  "model_trained_at": "2026-08-28T01:56:23.846619+00:00",
   "next_race_forecast": {
     "round_key": "13",
     "forecast": [
@@ -247,6 +247,6 @@
         "pointsProbability": 0.004036672839648268
       }
     ],
-    "generatedAt": "2026-08-27T17:07:20.487193+00:00"
+    "generatedAt": "2026-08-28T01:56:23.843310+00:00"
   }
 }
