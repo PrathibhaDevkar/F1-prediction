@@ -5,6 +5,8 @@ import LiveTelemetry from './components/LiveTelemetry'
 import HeadToHead from './components/HeadToHead'
 import TrackMap from './components/TrackMap'
 import StartLights from './components/StartLights'
+import Standings from './components/Standings'
+import Accuracy from './components/Accuracy'
 import { API_BASE } from './config'
 
 function App() {
@@ -273,6 +275,10 @@ function App() {
           <p style={{ color: 'var(--f1-light-grey)' }}>No upcoming race found on the calendar.</p>
         )}
       </div>
+
+      <Accuracy />
+
+      <Standings />
 
       <HeadToHead drivers={drivers} />
 

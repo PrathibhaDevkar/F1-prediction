@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from services import fastf1_service, head_to_head_service
+from services import fastf1_service, head_to_head_service, standings_service
 
 router = APIRouter(prefix="/api", tags=["drivers"])
 
@@ -35,3 +35,11 @@ def head_to_head(driver_a: str, driver_b: str):
     if result is None:
         raise HTTPException(status_code=404, detail="No shared races found for these drivers")
     return result
+
+
+@router.get("/standings")
+def standings(season: int = fastf1_service.CURRENT_SEASON):
+    result = standings_service.get_standings(season)
+    if result is None:
+        return {"season": season, "drivers": [], "constructors": []}
+    return {"season": season, **result}

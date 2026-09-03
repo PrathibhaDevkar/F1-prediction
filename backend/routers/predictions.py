@@ -53,3 +53,23 @@ def next_race():
     last_updated = cached["generatedAt"] if cached else None
 
     return {"event": event_payload, "forecast": forecast, "lastUpdated": last_updated}
+
+
+@router.get("/accuracy")
+def accuracy():
+    """Held-out test-set performance: the model never saw these races
+    during training, so this is a real (if retrospective) measure of how
+    good the predictions actually are — not just an AUC number, but the
+    real per-race predicted-vs-actual rows behind it."""
+    metrics = db.get_model_metrics()
+    if metrics is None:
+        return {"metrics": None, "testPredictions": []}
+    return {"metrics": metrics, "testPredictions": db.get_model_test_predictions()}
+
+
+@router.get("/track-record")
+def track_record():
+    """Real forecasts made before each race happened, reconciled against
+    what actually happened once it did — builds up over time as new races
+    complete, unlike /api/accuracy which is a fixed historical sample."""
+    return {"records": db.get_track_record()}

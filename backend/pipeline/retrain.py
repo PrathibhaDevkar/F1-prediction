@@ -32,6 +32,10 @@ def check_and_process_new_results():
     print(f"[pipeline] New race detected: round {latest_round} "
           f"(previously processed: {last_processed_round}). Retraining...")
 
+    model_trainer.reconcile_forecast(
+        fastf1_service.CURRENT_SEASON, latest_round, completed[-1]["EventName"]
+    )
+
     model_data, next_race = model_trainer.train_and_save()
     if model_data is None:
         db.set_state("last_run_status", "retrain_failed")

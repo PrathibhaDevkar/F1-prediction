@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { WS_URL } from '../config';
+import { API_BASE, WS_URL } from '../config';
 
 const MAX_HISTORY_POINTS = 60;
+
+function daysUntil(dateStr) {
+  const diffMs = new Date(dateStr) - new Date();
+  const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  if (days <= 0) return 'soon';
+  if (days === 1) return 'in 1 day';
+  return `in ${days} days`;
+}
 
 const STATUS_COPY = {
   idle: 'Connecting to the live telemetry service...',
@@ -16,8 +24,16 @@ export default function LiveTelemetry() {
   const [detail, setDetail] = useState(null);
   const [session, setSession] = useState(null);
   const [driverReadings, setDriverReadings] = useState({});
+  const [nextRace, setNextRace] = useState(null);
   const historyRef = useRef({});
   const wsRef = useRef(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/next-race`)
+      .then(res => res.json())
+      .then(data => setNextRace(data.event || null))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,6 +94,12 @@ export default function LiveTelemetry() {
             No F1 session is currently active. Live telemetry will appear here automatically once a
             session goes live.
           </p>
+          {nextRace && (
+            <p style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+              Next race: <strong>{nextRace.name}</strong> — {nextRace.location}, {nextRace.country}
+              {nextRace.date && <> ({daysUntil(nextRace.date)})</>}
+            </p>
+          )}
           {session && (
             <p style={{ color: 'var(--f1-light-grey)', fontSize: '0.85rem' }}>
               Most recent session: {session.session_name} — {session.location}, {session.country_name}

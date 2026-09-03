@@ -191,6 +191,7 @@ def train_model(df: pd.DataFrame):
     # metric that actually reflects whether these probabilities are useful.
     classifiers = {}
     classifier_metrics = {}
+    test_probs = {}
     for name, threshold in [("win", 1), ("podium", 3), ("points", 10)]:
         y = (finish <= threshold).astype(int)
         y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
@@ -199,6 +200,7 @@ def train_model(df: pd.DataFrame):
         classifiers[name] = clf
         classifier_metrics[f"{name}_auc"] = roc_auc_score(y_test, clf.predict_proba(X_test)[:, 1])
         classifier_metrics[f"{name}_base_rate"] = y_test.mean()
+        test_probs[name] = clf.predict_proba(X_test)[:, 1]
 
     metrics = {
         "exact_accuracy": exact_accuracy,
@@ -206,7 +208,28 @@ def train_model(df: pd.DataFrame):
         "within_3_positions": within_3,
         **classifier_metrics,
     }
-    return position_model, classifiers, feature_names, metrics
+
+    # Per-row predicted-vs-actual for the held-out test races, so the app
+    # can show real examples instead of just the aggregate numbers above.
+    test_meta = df.iloc[split_idx:][["season", "round", "event", "driver", "driver_name", "team"]]
+    test_predictions = [
+        {
+            "season": int(meta["season"]),
+            "round": int(meta["round"]),
+            "event": meta["event"],
+            "driver": meta["driver"],
+            "driverName": meta["driver_name"],
+            "team": meta["team"],
+            "actualPosition": int(actual),
+            "predictedPosition": int(pred),
+            "winProbability": float(test_probs["win"][i]),
+            "podiumProbability": float(test_probs["podium"][i]),
+            "pointsProbability": float(test_probs["points"][i]),
+        }
+        for i, ((_, meta), actual, pred) in enumerate(zip(test_meta.iterrows(), finish_test, rounded_preds))
+    ]
+
+    return position_model, classifiers, feature_names, metrics, test_predictions
 
 
 def build_form_snapshots(history: RaceHistory, season: int = fastf1_service.CURRENT_SEASON):
@@ -262,6 +285,48 @@ def generate_next_race_forecast(model_data, history: RaceHistory) -> dict | None
     return {"round_key": round_key, "forecast": forecast, "generatedAt": generated_at}
 
 
+def reconcile_forecast(season: int, round_number: int, event_name: str):
+    """A race that was previously forecasted (back when it was still the
+    'next race') has now happened. Compare what we predicted to what
+    actually occurred and record it permanently in track_record — this is
+    what lets the app show a real, honest track record instead of just
+    held-out test-set metrics. No-ops quietly if we never had a forecast
+    for this round (e.g. the very first race after this feature shipped).
+    """
+    cached = db.get_cached_prediction(str(round_number))
+    if not cached:
+        print(f"[track-record] No prior forecast for round {round_number}, nothing to reconcile.")
+        return
+
+    session = fastf1_service.get_race_session(season, round_number)
+    if session is None or session.results is None or session.results.empty:
+        print(f"[track-record] Could not load results for round {round_number}, skipping reconciliation.")
+        return
+
+    actual_by_driver = dict(zip(session.results["Abbreviation"], session.results["Position"]))
+    rows = []
+    for f in cached["forecast"]:
+        actual = actual_by_driver.get(f["abbreviation"])
+        if actual is None or pd.isna(actual):
+            continue
+        rows.append({
+            "season": season,
+            "round": round_number,
+            "event": event_name,
+            "driver": f["abbreviation"],
+            "driver_name": f["driver"],
+            "predicted_position": f["predictedPosition"],
+            "win_probability": f["winProbability"],
+            "podium_probability": f["podiumProbability"],
+            "points_probability": f["pointsProbability"],
+            "actual_position": int(actual),
+        })
+
+    if rows:
+        db.add_track_record_rows(rows)
+        print(f"[track-record] Reconciled {len(rows)} driver predictions for round {round_number}.")
+
+
 def write_seed_state(next_race: dict | None):
     """Snapshot pipeline_state.db's key fields + the next-race forecast
     into a small JSON file that (unlike pipeline_state.db itself) is meant
@@ -273,6 +338,9 @@ def write_seed_state(next_race: dict | None):
         "last_processed_round": db.get_state("last_processed_round"),
         "model_trained_at": db.get_state("model_trained_at"),
         "next_race_forecast": next_race,
+        "model_metrics": db.get_model_metrics(),
+        "model_test_predictions": db.get_model_test_predictions(),
+        "track_record": db.get_track_record(),
     }
     tmp_path = SEED_STATE_PATH + ".tmp"
     with open(tmp_path, "w") as f:
@@ -292,7 +360,7 @@ def train_and_save() -> tuple[dict | None, dict | None]:
         return None, None
 
     print(f"Dataset compiled with {len(df)} records.")
-    position_model, classifiers, features, metrics = train_model(df)
+    position_model, classifiers, features, metrics, test_predictions = train_model(df)
     print(
         f"Position: {metrics['exact_accuracy'] * 100:.1f}% exact, "
         f"{metrics['within_3_positions'] * 100:.1f}% within 3, MAE {metrics['mae']:.2f} | "
@@ -300,6 +368,7 @@ def train_and_save() -> tuple[dict | None, dict | None]:
         f"Podium AUC: {metrics['podium_auc']:.2f} (base rate {metrics['podium_base_rate']*100:.1f}%) | "
         f"Points AUC: {metrics['points_auc']:.2f} (base rate {metrics['points_base_rate']*100:.1f}%)"
     )
+    db.set_model_metrics(metrics, test_predictions)
 
     driver_form, team_form = build_form_snapshots(history)
     model_data = save_model(position_model, classifiers, features, driver_form, team_form)
