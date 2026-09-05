@@ -15,6 +15,7 @@ export default function Accuracy() {
   const [accuracy, setAccuracy] = useState(null);
   const [trackRecord, setTrackRecord] = useState(null);
   const [error, setError] = useState(null);
+  const [trackRecordError, setTrackRecordError] = useState(null);
 
   useEffect(() => {
     fetch(`${API_BASE}/api/accuracy`)
@@ -26,9 +27,12 @@ export default function Accuracy() {
       .catch(err => setError(err.message));
 
     fetch(`${API_BASE}/api/track-record`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load track record');
+        return res.json();
+      })
       .then(data => setTrackRecord(data.records || []))
-      .catch(() => setTrackRecord([]));
+      .catch(err => setTrackRecordError(err.message));
   }, []);
 
   const metrics = accuracy?.metrics;
@@ -75,7 +79,8 @@ export default function Accuracy() {
           <h3 style={{ fontSize: '0.95rem', color: 'var(--f1-light-grey)', marginBottom: '0.5rem' }}>
             Real forecasts vs. what happened
           </h3>
-          {trackRecord === null && <p>Loading track record...</p>}
+          {trackRecordError && <p style={{ color: '#ff3b30', fontSize: '0.85rem' }}>{trackRecordError}</p>}
+          {trackRecord === null && !trackRecordError && <p>Loading track record...</p>}
           {trackRecord && trackRecord.length === 0 && (
             <p style={{ color: 'var(--f1-light-grey)', fontSize: '0.85rem', marginBottom: '2rem' }}>
               No completed races yet since this feature shipped — a real forecast is logged before every
@@ -95,7 +100,11 @@ export default function Accuracy() {
                 </thead>
                 <tbody>
                   {trackRecord.map((r, i) => (
-                    <tr key={`${r.season}-${r.round}-${r.driver}`} style={{ borderBottom: '1px solid var(--f1-dark)' }}>
+                    <tr
+                      key={`${r.season}-${r.round}-${r.driver}`}
+                      className="stagger-row"
+                      style={{ borderBottom: '1px solid var(--f1-dark)', animationDelay: `${i * 15}ms` }}
+                    >
                       <td style={{ padding: '0.4rem' }}>{r.season} {r.event}</td>
                       <td style={{ padding: '0.4rem' }}>{r.driver_name}</td>
                       <td style={{ padding: '0.4rem' }}>P{r.predicted_position}</td>

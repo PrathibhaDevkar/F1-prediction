@@ -7,7 +7,7 @@ export default function TrackMap({ drivers }) {
   const [status, setStatus] = useState('idle');
   const [positions, setPositions] = useState({});
   const [bounds, setBounds] = useState(null);
-  const trailRef = useRef([]);
+  const [trail, setTrail] = useState([]);
   const boundsRef = useRef(null);
   const wsRef = useRef(null);
 
@@ -32,7 +32,6 @@ export default function TrackMap({ drivers }) {
         if (msg.type !== 'telemetry' || !msg.positions?.length) return;
 
         for (const p of msg.positions) {
-          trailRef.current.push({ x: p.x, y: p.y });
           if (!boundsRef.current) {
             boundsRef.current = { minX: p.x, maxX: p.x, minY: p.y, maxY: p.y };
           } else {
@@ -43,10 +42,8 @@ export default function TrackMap({ drivers }) {
             b.maxY = Math.max(b.maxY, p.y);
           }
         }
-        if (trailRef.current.length > MAX_TRAIL_POINTS) {
-          trailRef.current = trailRef.current.slice(-MAX_TRAIL_POINTS);
-        }
 
+        setTrail((prev) => [...prev, ...msg.positions.map(p => ({ x: p.x, y: p.y }))].slice(-MAX_TRAIL_POINTS));
         setPositions((prev) => {
           const next = { ...prev };
           for (const p of msg.positions) next[p.driver_number] = { x: p.x, y: p.y };
@@ -78,7 +75,7 @@ export default function TrackMap({ drivers }) {
     <div className="dashboard-panel" style={{ maxWidth: '1200px', width: '100%', margin: '2rem auto 0' }}>
       <h2>Track Map</h2>
       <svg viewBox={viewBox} style={{ width: '100%', height: '420px', background: '#050505' }}>
-        {trailRef.current.map((p, i) => (
+        {trail.map((p, i) => (
           <circle key={i} cx={p.x} cy={-p.y} r={40} fill="#2a2a2a" />
         ))}
         {Object.entries(positions).map(([num, pos]) => {

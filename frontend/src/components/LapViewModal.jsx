@@ -10,12 +10,7 @@ export default function LapViewModal({ race, onClose }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!race) {
-      setDetail(null);
-      setError(null);
-      return;
-    }
-    if (race.status !== 'completed') return;
+    if (!race || race.status !== 'completed') return;
 
     setLoading(true);
     setError(null);
@@ -31,7 +26,11 @@ export default function LapViewModal({ race, onClose }) {
 
   if (!race) return null;
 
-  const winner = detail?.podium?.[0];
+  // Guard on race.status rather than relying on `detail` alone, so a stale
+  // fetch from a previously-viewed completed race never renders against a
+  // different, not-yet-completed race.
+  const resultsReady = race.status === 'completed' ? detail : null;
+  const winner = resultsReady?.podium?.[0];
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -49,11 +48,11 @@ export default function LapViewModal({ race, onClose }) {
           </div>
           <div className="stat-box">
             <span className="stat-label">Laps</span>
-            <span className="stat-value">{detail?.laps ?? '--'}</span>
+            <span className="stat-value">{resultsReady?.laps ?? '--'}</span>
           </div>
           <div className="stat-box">
             <span className="stat-label">Location</span>
-            <span className="stat-value">{detail?.location ?? race.location ?? '--'}</span>
+            <span className="stat-value">{resultsReady?.location ?? race.location ?? '--'}</span>
           </div>
         </div>
 
@@ -81,10 +80,10 @@ export default function LapViewModal({ race, onClose }) {
           </div>
         )}
 
-        {detail?.podium && detail.podium.length > 1 && (
+        {resultsReady?.podium && resultsReady.podium.length > 1 && (
           <div style={{ marginTop: '1rem', textAlign: 'left' }}>
             <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', color: 'var(--f1-light-grey)', marginBottom: '0.5rem' }}>Podium</h3>
-            {detail.podium.map(p => (
+            {resultsReady.podium.map(p => (
               <div key={p.position} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 0', borderBottom: '1px solid var(--f1-dark)' }}>
                 <span>P{p.position} — {p.driver}</span>
                 <span style={{ color: 'var(--f1-light-grey)' }}>{p.team}</span>

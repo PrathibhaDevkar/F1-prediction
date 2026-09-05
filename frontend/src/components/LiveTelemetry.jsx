@@ -24,8 +24,8 @@ export default function LiveTelemetry() {
   const [detail, setDetail] = useState(null);
   const [session, setSession] = useState(null);
   const [driverReadings, setDriverReadings] = useState({});
+  const [speedHistory, setSpeedHistory] = useState({});
   const [nextRace, setNextRace] = useState(null);
-  const historyRef = useRef({});
   const wsRef = useRef(null);
 
   useEffect(() => {
@@ -55,10 +55,17 @@ export default function LiveTelemetry() {
             const next = { ...prev };
             for (const reading of msg.readings) {
               next[reading.driver_number] = reading;
-
-              const hist = historyRef.current[reading.driver_number] || [];
-              hist.push({ time: new Date(reading.date).toLocaleTimeString(), speed: reading.speed });
-              historyRef.current[reading.driver_number] = hist.slice(-MAX_HISTORY_POINTS);
+            }
+            return next;
+          });
+          setSpeedHistory((prev) => {
+            const next = { ...prev };
+            for (const reading of msg.readings) {
+              const hist = next[reading.driver_number] || [];
+              next[reading.driver_number] = [
+                ...hist,
+                { time: new Date(reading.date).toLocaleTimeString(), speed: reading.speed },
+              ].slice(-MAX_HISTORY_POINTS);
             }
             return next;
           });
@@ -82,7 +89,7 @@ export default function LiveTelemetry() {
 
   const driverNumbers = Object.keys(driverReadings);
   const firstDriver = driverNumbers[0];
-  const chartData = firstDriver ? historyRef.current[firstDriver] || [] : [];
+  const chartData = firstDriver ? speedHistory[firstDriver] || [] : [];
 
   return (
     <div className="dashboard-panel" style={{ maxWidth: '1200px', width: '100%', margin: '2rem auto 0' }}>
