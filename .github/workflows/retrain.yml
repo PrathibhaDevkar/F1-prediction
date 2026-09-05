@@ -42,6 +42,7 @@ jobs:
         run: |
           python -c "
           import db
+          db.seed_if_empty()
           from pipeline.retrain import check_and_process_new_results
           result = check_and_process_new_results()
           print('Pipeline result:', result)
