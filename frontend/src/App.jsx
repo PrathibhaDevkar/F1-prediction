@@ -234,8 +234,10 @@ function App() {
             {nextRace.forecast && (
               <>
                 <p style={{ color: 'var(--f1-light-grey)', fontSize: '0.85rem', marginBottom: '1rem' }}>
-                  Grid positions are assumed from each driver's most recent race (real grid isn't
-                  known until qualifying) — {nextRace.lastUpdated ? `forecast generated ${new Date(nextRace.lastUpdated).toLocaleString()}` : ''}
+                  {nextRace.forecast[0]?.assumedGridSource === 'real qualifying result'
+                    ? 'Grid positions are from official qualifying results'
+                    : "Grid positions are assumed from each driver's most recent race (real grid isn't known until qualifying)"}
+                  {' — '}{nextRace.lastUpdated ? `forecast generated ${new Date(nextRace.lastUpdated).toLocaleString()}` : ''}
                 </p>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
@@ -243,7 +245,7 @@ function App() {
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Predicted</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Driver</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Team</th>
-                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Assumed Grid</th>
+                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Grid</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Win</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Podium</th>
                       <th style={{ textAlign: 'left', padding: '0.5rem' }}>Points</th>

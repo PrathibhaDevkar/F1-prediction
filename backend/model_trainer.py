@@ -327,6 +327,39 @@ def reconcile_forecast(season: int, round_number: int, event_name: str):
         print(f"[track-record] Reconciled {len(rows)} driver predictions for round {round_number}.")
 
 
+def refresh_forecast_if_quali_ready() -> dict:
+    """Cheap check, no retraining involved: if real qualifying results have
+    just become available for the cached 'next race' forecast and it's
+    still on the grid-from-last-race estimate, regenerate just the
+    forecast. Reuses the already-trained model plus the checkpoint's
+    history - the model itself hasn't changed, only the grid input has,
+    so there's no need to re-fetch or retrain anything."""
+    next_event = fastf1_service.get_next_event()
+    if next_event is None:
+        return {"status": "no_upcoming_race"}
+
+    round_key = str(int(next_event["RoundNumber"]))
+    cached = db.get_cached_prediction(round_key)
+    if cached and cached["forecast"] and cached["forecast"][0].get("assumedGridSource") == "real qualifying result":
+        return {"status": "already_real"}
+
+    real_grid = fastf1_service.get_qualifying_grid(fastf1_service.CURRENT_SEASON, int(next_event["RoundNumber"]))
+    if not real_grid:
+        return {"status": "quali_not_ready"}
+
+    model_data = model_service.get_model()
+    if not model_data:
+        return {"status": "model_not_loaded"}
+
+    _, history, _ = _load_checkpoint()
+    next_race = generate_next_race_forecast(model_data, history)
+    if not next_race:
+        return {"status": "forecast_failed"}
+
+    write_seed_state(next_race)
+    return {"status": "refreshed"}
+
+
 def write_seed_state(next_race: dict | None):
     """Snapshot pipeline_state.db's key fields + the next-race forecast
     into a small JSON file that (unlike pipeline_state.db itself) is meant

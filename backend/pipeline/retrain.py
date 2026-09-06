@@ -27,7 +27,8 @@ def check_and_process_new_results():
     if latest_round <= last_processed_round:
         db.set_state("last_run_status", "no_new_race")
         print(f"[pipeline] No new race since round {last_processed_round}.")
-        return {"status": "no_new_race", "latest_round": latest_round}
+        quali_refresh = model_trainer.refresh_forecast_if_quali_ready()
+        return {"status": "no_new_race", "latest_round": latest_round, "quali_refresh": quali_refresh}
 
     print(f"[pipeline] New race detected: round {latest_round} "
           f"(previously processed: {last_processed_round}). Retraining...")

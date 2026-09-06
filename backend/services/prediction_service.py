@@ -75,9 +75,10 @@ def predict_next_race(
     live RaceHistory (built during this same training run) for each
     driver/team's exact current rolling form.
 
-    Real grid positions aren't known until qualifying happens, so this uses
-    each driver's grid position from their MOST RECENT race as a stand-in —
-    clearly labelled as such in the response, not presented as certain.
+    Uses the real starting grid once that weekend's qualifying has run;
+    until then, falls back to each driver's grid position from their most
+    recent race as a stand-in. Which one was used is labelled in the
+    response (assumedGridSource), not presented as certain either way.
     """
     lineup = fastf1_service.get_latest_driver_lineup(season)
     if lineup.empty:
@@ -87,14 +88,21 @@ def predict_next_race(
     if not completed:
         return None
 
-    last_round = int(completed[-1]["RoundNumber"])
-    last_session = fastf1_service.get_race_session(season, last_round)
-    if last_session is None or last_session.results is None or last_session.results.empty:
-        return None
+    next_round = int(next_event["RoundNumber"])
+    real_grid = fastf1_service.get_qualifying_grid(season, next_round)
 
-    grid_by_driver = dict(
-        zip(last_session.results["Abbreviation"], last_session.results["GridPosition"])
-    )
+    if real_grid:
+        grid_by_driver = real_grid
+        grid_source = "real qualifying result"
+    else:
+        last_round = int(completed[-1]["RoundNumber"])
+        last_session = fastf1_service.get_race_session(season, last_round)
+        if last_session is None or last_session.results is None or last_session.results.empty:
+            return None
+        grid_by_driver = dict(
+            zip(last_session.results["Abbreviation"], last_session.results["GridPosition"])
+        )
+        grid_source = f"grid from round {last_round}"
 
     circuit = next_event.get("Location", "")
 
@@ -115,7 +123,7 @@ def predict_next_race(
             "abbreviation": abbr,
             "team": team,
             "assumedGrid": int(grid),
-            "assumedGridSource": f"grid from round {last_round}",
+            "assumedGridSource": grid_source,
             "predictedPosition": result["predicted_position"],
             "winProbability": result["win_probability"],
             "podiumProbability": result["podium_probability"],

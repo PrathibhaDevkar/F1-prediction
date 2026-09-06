@@ -88,6 +88,33 @@ def get_race_session(season: int, round_number: int, with_laps: bool = False):
         return None
 
 
+def get_qualifying_grid(season: int, round_number: int) -> dict[str, int]:
+    """Real starting-grid positions from that race weekend's own qualifying
+    session, keyed by driver abbreviation. Empty if qualifying hasn't
+    happened yet or fails to load - callers should fall back to an
+    estimate in that case. Doesn't account for grid penalties applied
+    after qualifying, since those aren't known until the race session's
+    own results load, which isn't available before the race happens.
+    """
+    try:
+        session = fastf1.get_session(season, round_number, "Q")
+        session.load(laps=False, telemetry=False, weather=False, messages=False)
+        results = session.results
+    except Exception as e:
+        print(f"[fastf1_service] Qualifying not available yet for {season} round {round_number}: {e}")
+        return {}
+
+    if results is None or results.empty:
+        return {}
+
+    grid = {}
+    for _, row in results.iterrows():
+        pos = row.get("Position")
+        if pd.notna(pos):
+            grid[row["Abbreviation"]] = int(pos)
+    return grid
+
+
 def get_qualifying_gaps(season: int, round_number: int) -> dict[str, float]:
     """Each driver's gap to pole (seconds) from that race weekend's own
     qualifying session. Missing a time (crash, no lap set) falls back to
