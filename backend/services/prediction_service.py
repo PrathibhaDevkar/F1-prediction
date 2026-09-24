@@ -6,6 +6,7 @@ probabilities (from separate classifiers) rather than a position-by-
 position probability list — closer to what people actually want to know
 ("will they podium?") than an exact-position guess.
 """
+import numpy as np
 import pandas as pd
 
 from services import fastf1_service
@@ -15,6 +16,34 @@ from services.feature_engineering import (
     DEFAULT_QUALI_GAP,
     RaceHistory,
 )
+
+
+# Each classifier scores drivers one at a time, so nothing stops a race's
+# win probabilities summing to 0.01 or 1.3. But a race has exactly one
+# winner, three podium places and ten points places - these are the totals
+# a full field's probabilities have to add up to.
+RACE_SLOTS = {"win": 1, "podium": 3, "points": 10}
+
+
+def normalize_to_race(probs, slots: int) -> np.ndarray:
+    """Rescale one race's probabilities so they sum to `slots`, by adding
+    the same constant to every driver's log-odds. Unlike dividing by the
+    sum, this keeps every probability inside [0, 1] (which matters for
+    podium/points, where plain scaling can push a favourite past 100%)
+    and never changes the order of drivers. Needs more drivers than slots;
+    with fewer, returns the input unchanged."""
+    p = np.clip(np.asarray(probs, dtype=float), 1e-6, 1 - 1e-6)
+    if len(p) <= slots:
+        return p
+    logits = np.log(p / (1 - p))
+    lo, hi = -30.0, 30.0
+    for _ in range(60):  # bisection on the shift; total is monotonic in it
+        shift = (lo + hi) / 2
+        if (1 / (1 + np.exp(-(logits + shift)))).sum() > slots:
+            hi = shift
+        else:
+            lo = shift
+    return 1 / (1 + np.exp(-(logits + (lo + hi) / 2)))
 
 
 def build_prediction(
@@ -129,6 +158,12 @@ def predict_next_race(
             "podiumProbability": result["podium_probability"],
             "pointsProbability": result["points_probability"],
         })
+
+    for name, slots in RACE_SLOTS.items():
+        key = f"{name}Probability"
+        normalized = normalize_to_race([f[key] for f in forecasts], slots)
+        for f, p in zip(forecasts, normalized):
+            f[key] = float(p)
 
     forecasts.sort(key=lambda f: f["predictedPosition"])
     return forecasts
