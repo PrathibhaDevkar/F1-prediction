@@ -1,254 +1,7 @@
 {
-  "last_processed_round": "17",
-  "model_trained_at": "2026-10-11T17:03:11.215885+00:00",
-  "next_race_forecast": {
-    "round_key": "18",
-    "forecast": [
-      {
-        "driver": "Andrea Kimi Antonelli",
-        "abbreviation": "ANT",
-        "team": "Mercedes",
-        "assumedGrid": 4,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 3,
-        "winProbability": 0.0983725973374914,
-        "podiumProbability": 0.7184044130998037,
-        "pointsProbability": 0.971255823077915
-      },
-      {
-        "driver": "Max Verstappen",
-        "abbreviation": "VER",
-        "team": "Red Bull",
-        "assumedGrid": 1,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 5,
-        "winProbability": 0.7412050263642752,
-        "podiumProbability": 0.9367599187518283,
-        "pointsProbability": 0.9293722389130835
-      },
-      {
-        "driver": "Lando Norris",
-        "abbreviation": "NOR",
-        "team": "McLaren",
-        "assumedGrid": 5,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 8,
-        "winProbability": 0.009631628883725438,
-        "podiumProbability": 0.17290681849348383,
-        "pointsProbability": 0.8430813483639511
-      },
-      {
-        "driver": "Oscar Piastri",
-        "abbreviation": "PIA",
-        "team": "McLaren",
-        "assumedGrid": 6,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 8,
-        "winProbability": 0.009816285189369051,
-        "podiumProbability": 0.07841976256653499,
-        "pointsProbability": 0.8289541834024887
-      },
-      {
-        "driver": "Oliver Bearman",
-        "abbreviation": "BEA",
-        "team": "Haas F1 Team",
-        "assumedGrid": 11,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 9,
-        "winProbability": 0.0002274914034289846,
-        "podiumProbability": 0.008226514352286225,
-        "pointsProbability": 0.38129859074841754
-      },
-      {
-        "driver": "Charles Leclerc",
-        "abbreviation": "LEC",
-        "team": "Ferrari",
-        "assumedGrid": 2,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 10,
-        "winProbability": 0.09277090423583706,
-        "podiumProbability": 0.6472557725108543,
-        "pointsProbability": 0.6949773992531892
-      },
-      {
-        "driver": "George Russell",
-        "abbreviation": "RUS",
-        "team": "Mercedes",
-        "assumedGrid": 19,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 10,
-        "winProbability": 0.001107261502832176,
-        "podiumProbability": 0.03279459706220031,
-        "pointsProbability": 0.6122329446085902
-      },
-      {
-        "driver": "Arvid Lindblad",
-        "abbreviation": "LIN",
-        "team": "RB F1 Team",
-        "assumedGrid": 9,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 10,
-        "winProbability": 0.00039975330699548137,
-        "podiumProbability": 0.01856753601732476,
-        "pointsProbability": 0.5475312713621261
-      },
-      {
-        "driver": "Lewis Hamilton",
-        "abbreviation": "HAM",
-        "team": "Ferrari",
-        "assumedGrid": 3,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 11,
-        "winProbability": 0.03783680222116425,
-        "podiumProbability": 0.235024137541857,
-        "pointsProbability": 0.7736726512356797
-      },
-      {
-        "driver": "Liam Lawson",
-        "abbreviation": "LAW",
-        "team": "RB F1 Team",
-        "assumedGrid": 8,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 11,
-        "winProbability": 0.00039975330699548137,
-        "podiumProbability": 0.014679549993720974,
-        "pointsProbability": 0.6404434643900025
-      },
-      {
-        "driver": "Isack Hadjar",
-        "abbreviation": "HAD",
-        "team": "Red Bull",
-        "assumedGrid": 22,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 11,
-        "winProbability": 0.005228472512218708,
-        "podiumProbability": 0.07965754748309835,
-        "pointsProbability": 0.5985332672585064
-      },
-      {
-        "driver": "Pierre Gasly",
-        "abbreviation": "GAS",
-        "team": "Alpine F1 Team",
-        "assumedGrid": 7,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 11,
-        "winProbability": 0.00034602823121642834,
-        "podiumProbability": 0.017373825120743494,
-        "pointsProbability": 0.5577697824031894
-      },
-      {
-        "driver": "Nico H\u00fclkenberg",
-        "abbreviation": "HUL",
-        "team": "Audi",
-        "assumedGrid": 10,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 12,
-        "winProbability": 0.000254138876460053,
-        "podiumProbability": 0.0031573716907172026,
-        "pointsProbability": 0.500590510062336
-      },
-      {
-        "driver": "Franco Colapinto",
-        "abbreviation": "COL",
-        "team": "Alpine F1 Team",
-        "assumedGrid": 15,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 12,
-        "winProbability": 0.0002274914034289846,
-        "podiumProbability": 0.006821829011462231,
-        "pointsProbability": 0.3338046206990725
-      },
-      {
-        "driver": "Esteban Ocon",
-        "abbreviation": "OCO",
-        "team": "Haas F1 Team",
-        "assumedGrid": 12,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 13,
-        "winProbability": 0.000254138876460053,
-        "podiumProbability": 0.008226514352286225,
-        "pointsProbability": 0.25083028485578884
-      },
-      {
-        "driver": "Carlos Sainz",
-        "abbreviation": "SAI",
-        "team": "Williams",
-        "assumedGrid": 13,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 14,
-        "winProbability": 0.0006405778252686698,
-        "podiumProbability": 0.005179699267599538,
-        "pointsProbability": 0.21840949864242074
-      },
-      {
-        "driver": "Alexander Albon",
-        "abbreviation": "ALB",
-        "team": "Williams",
-        "assumedGrid": 16,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 14,
-        "winProbability": 0.0002274914034289846,
-        "podiumProbability": 0.003762142354883669,
-        "pointsProbability": 0.10162860865428343
-      },
-      {
-        "driver": "Lance Stroll",
-        "abbreviation": "STR",
-        "team": "Aston Martin",
-        "assumedGrid": 21,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 14,
-        "winProbability": 0.0001997247708485368,
-        "podiumProbability": 0.0012037064972077942,
-        "pointsProbability": 0.0451823554580007
-      },
-      {
-        "driver": "Fernando Alonso",
-        "abbreviation": "ALO",
-        "team": "Aston Martin",
-        "assumedGrid": 20,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 15,
-        "winProbability": 0.0001997247708485368,
-        "podiumProbability": 0.0017199628060510991,
-        "pointsProbability": 0.0358408018977359
-      },
-      {
-        "driver": "Sergio P\u00e9rez",
-        "abbreviation": "PER",
-        "team": "Cadillac F1 Team",
-        "assumedGrid": 17,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 15,
-        "winProbability": 0.0002274914034289846,
-        "podiumProbability": 0.003959462016931199,
-        "pointsProbability": 0.04725553606219548
-      },
-      {
-        "driver": "Valtteri Bottas",
-        "abbreviation": "BOT",
-        "team": "Cadillac F1 Team",
-        "assumedGrid": 18,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 15,
-        "winProbability": 0.0001997247708485368,
-        "podiumProbability": 0.00282854473455284,
-        "pointsProbability": 0.024292664952626213
-      },
-      {
-        "driver": "Gabriel Bortoleto",
-        "abbreviation": "BOR",
-        "team": "Audi",
-        "assumedGrid": 14,
-        "assumedGridSource": "grid from round 17",
-        "predictedPosition": 15,
-        "winProbability": 0.0002274914034289846,
-        "podiumProbability": 0.003070374274573049,
-        "pointsProbability": 0.06304215369840052
-      }
-    ],
-    "generatedAt": "2026-10-11T17:03:11.212133+00:00"
-  },
+  "last_processed_round": "18",
+  "model_trained_at": "2026-10-25T20:11:03.618563+00:00",
+  "next_race_forecast": null,
   "model_metrics": {
     "exact_accuracy": 0.08238636363636363,
     "mae": 3.5844355495816944,
@@ -365,7 +118,7 @@
       "actualPosition": 8,
       "predictedPosition": 12,
       "winProbability": 0.0009119434077951324,
-      "podiumProbability": 0.02481288007157787,
+      "podiumProbability": 0.024812880071577878,
       "pointsProbability": 0.704258831504003
     },
     {
@@ -378,7 +131,7 @@
       "actualPosition": 9,
       "predictedPosition": 14,
       "winProbability": 0.0006147121130802828,
-      "podiumProbability": 0.005920548686360442,
+      "podiumProbability": 0.005920548686360443,
       "pointsProbability": 0.1225855285484267
     },
     {
@@ -678,7 +431,7 @@
       "predictedPosition": 13,
       "winProbability": 0.00020750371248550253,
       "podiumProbability": 0.009383111517272967,
-      "pointsProbability": 0.25763081590946885
+      "pointsProbability": 0.2576308159094689
     },
     {
       "season": 2026,
@@ -728,7 +481,7 @@
       "team": "RB F1 Team",
       "actualPosition": 14,
       "predictedPosition": 11,
-      "winProbability": 0.00024668067526841127,
+      "winProbability": 0.0002466806752684113,
       "podiumProbability": 0.007483780768712457,
       "pointsProbability": 0.4010691596808635
     },
@@ -741,7 +494,7 @@
       "team": "Williams",
       "actualPosition": 15,
       "predictedPosition": 14,
-      "winProbability": 0.0009704427584518849,
+      "winProbability": 0.0009704427584518851,
       "podiumProbability": 0.0016602928613045386,
       "pointsProbability": 0.19431467223023222
     },
@@ -754,7 +507,7 @@
       "team": "Alpine F1 Team",
       "actualPosition": 16,
       "predictedPosition": 14,
-      "winProbability": 0.00024668067526841127,
+      "winProbability": 0.0002466806752684113,
       "podiumProbability": 0.00904613871866851,
       "pointsProbability": 0.29726640091277357
     },
@@ -898,7 +651,7 @@
       "actualPosition": 5,
       "predictedPosition": 3,
       "winProbability": 0.05253471573338886,
-      "podiumProbability": 0.5632782874138721,
+      "podiumProbability": 0.5632782874138722,
       "pointsProbability": 0.9761651092084906
     },
     {
@@ -1198,7 +951,7 @@
       "predictedPosition": 10,
       "winProbability": 0.0002583976229288161,
       "podiumProbability": 0.007904817419712794,
-      "pointsProbability": 0.4630201599993433
+      "pointsProbability": 0.4630201599993434
     },
     {
       "season": 2026,
@@ -1821,7 +1574,7 @@
       "actualPosition": 10,
       "predictedPosition": 14,
       "winProbability": 0.00013424958314923509,
-      "podiumProbability": 0.006702174701842924,
+      "podiumProbability": 0.006702174701842925,
       "pointsProbability": 0.1740724033527979
     },
     {
@@ -2419,7 +2172,7 @@
       "actualPosition": 12,
       "predictedPosition": 11,
       "winProbability": 0.00022806996129817858,
-      "podiumProbability": 0.0035880370605696254,
+      "podiumProbability": 0.0035880370605696262,
       "pointsProbability": 0.25708942290326364
     },
     {
@@ -2537,7 +2290,7 @@
       "predictedPosition": 15,
       "winProbability": 0.00022806996129817858,
       "podiumProbability": 0.0013889105218118562,
-      "pointsProbability": 0.07944827743376423
+      "pointsProbability": 0.07944827743376422
     },
     {
       "season": 2026,
@@ -2639,7 +2392,7 @@
       "team": "McLaren",
       "actualPosition": 7,
       "predictedPosition": 8,
-      "winProbability": 0.0013274907334362024,
+      "winProbability": 0.0013274907334362026,
       "podiumProbability": 0.13264655899610545,
       "pointsProbability": 0.7620072690024509
     },
@@ -2732,7 +2485,7 @@
       "predictedPosition": 12,
       "winProbability": 0.0003065613689517971,
       "podiumProbability": 0.0016126070793617735,
-      "pointsProbability": 0.23121145767945106
+      "pointsProbability": 0.23121145767945112
     },
     {
       "season": 2026,
@@ -2912,7 +2665,7 @@
       "team": "Red Bull",
       "actualPosition": 6,
       "predictedPosition": 7,
-      "winProbability": 0.008154329567030731,
+      "winProbability": 0.008154329567030733,
       "podiumProbability": 0.12659131963088763,
       "pointsProbability": 0.8884825119643814
     },
@@ -3070,7 +2823,7 @@
       "predictedPosition": 18,
       "winProbability": 0.0010099905733577756,
       "podiumProbability": 0.001675297942345456,
-      "pointsProbability": 0.023662864963998012
+      "pointsProbability": 0.023662864963998016
     },
     {
       "season": 2026,
@@ -3146,7 +2899,7 @@
       "team": "Mercedes",
       "actualPosition": 2,
       "predictedPosition": 9,
-      "winProbability": 0.04780685971447903,
+      "winProbability": 0.04780685971447904,
       "podiumProbability": 0.4613975780110452,
       "pointsProbability": 0.9163900204797165
     },
@@ -3211,7 +2964,7 @@
       "team": "Red Bull",
       "actualPosition": 7,
       "predictedPosition": 8,
-      "winProbability": 0.002753265315769257,
+      "winProbability": 0.0027532653157692575,
       "podiumProbability": 0.05601099252910828,
       "pointsProbability": 0.7458546745526019
     },
@@ -3276,7 +3029,7 @@
       "team": "RB F1 Team",
       "actualPosition": 12,
       "predictedPosition": 15,
-      "winProbability": 0.0003572387777258628,
+      "winProbability": 0.00035723877772586283,
       "podiumProbability": 0.011856117434374983,
       "pointsProbability": 0.4976969421031985
     },
@@ -3551,7 +3304,7 @@
       "predictedPosition": 14,
       "winProbability": 0.0006920695739185971,
       "podiumProbability": 0.011640337566748897,
-      "pointsProbability": 0.4636928572922805
+      "pointsProbability": 0.4636928572922806
     },
     {
       "season": 2026,
@@ -3705,7 +3458,7 @@
       "team": "Mercedes",
       "actualPosition": 1,
       "predictedPosition": 5,
-      "winProbability": 0.29515823519342693,
+      "winProbability": 0.2951582351934269,
       "podiumProbability": 0.7831165554073581,
       "pointsProbability": 0.8537273121554377
     },
@@ -3718,7 +3471,7 @@
       "team": "Red Bull",
       "actualPosition": 2,
       "predictedPosition": 4,
-      "winProbability": 0.041590069434904064,
+      "winProbability": 0.04159006943490407,
       "podiumProbability": 0.367933494169131,
       "pointsProbability": 0.9775806424100577
     },
@@ -3822,7 +3575,7 @@
       "team": "Audi",
       "actualPosition": 10,
       "predictedPosition": 13,
-      "winProbability": 6.94277730006405e-05,
+      "winProbability": 6.942777300064052e-05,
       "podiumProbability": 0.006538092591928564,
       "pointsProbability": 0.491496804788261
     },
@@ -3835,7 +3588,7 @@
       "team": "Haas F1 Team",
       "actualPosition": 11,
       "predictedPosition": 13,
-      "winProbability": 6.94277730006405e-05,
+      "winProbability": 6.942777300064052e-05,
       "podiumProbability": 0.0008107704517182499,
       "pointsProbability": 0.15255388493139044
     },
@@ -3848,7 +3601,7 @@
       "team": "Alpine F1 Team",
       "actualPosition": 12,
       "predictedPosition": 13,
-      "winProbability": 6.94277730006405e-05,
+      "winProbability": 6.942777300064052e-05,
       "podiumProbability": 0.009234279789699146,
       "pointsProbability": 0.2670579523676111
     },
@@ -3861,7 +3614,7 @@
       "team": "Audi",
       "actualPosition": 13,
       "predictedPosition": 14,
-      "winProbability": 7.127584964379827e-05,
+      "winProbability": 7.127584964379828e-05,
       "podiumProbability": 0.005419821382067066,
       "pointsProbability": 0.29523584737206754
     },
@@ -4355,7 +4108,7 @@
       "team": "RB F1 Team",
       "actualPosition": 7,
       "predictedPosition": 17,
-      "winProbability": 0.00012860431559834332,
+      "winProbability": 0.00012860431559834335,
       "podiumProbability": 0.007463733184253763,
       "pointsProbability": 0.1980733485953953
     },
@@ -4394,7 +4147,7 @@
       "team": "RB F1 Team",
       "actualPosition": 10,
       "predictedPosition": 14,
-      "winProbability": 0.00012860431559834332,
+      "winProbability": 0.00012860431559834335,
       "podiumProbability": 0.0054753756059238105,
       "pointsProbability": 0.21949412694725867
     },
@@ -4408,7 +4161,7 @@
       "actualPosition": 11,
       "predictedPosition": 12,
       "winProbability": 0.00012308129731085452,
-      "podiumProbability": 0.004962121709449872,
+      "podiumProbability": 0.004962121709449873,
       "pointsProbability": 0.30336670568000357
     },
     {
@@ -4810,7 +4563,7 @@
       "team": "Aston Martin",
       "actualPosition": 20,
       "predictedPosition": 16,
-      "winProbability": 0.00021570834953292005,
+      "winProbability": 0.00021570834953292008,
       "podiumProbability": 0.0007931982013317713,
       "pointsProbability": 0.030212934102092408
     },
