@@ -41,7 +41,7 @@ Backend runs on Render's free tier, which has no persistent disk — the first r
 
 ## Known limitations
 
-- **Exact finishing position is still hard to call** (MAE ~4 positions) — expected for a chaotic sport. Win/podium/points probabilities are the more useful numbers: AUC 0.97 / 0.91 / 0.82, well above random.
+- **Exact finishing position is still hard to call** (MAE ~3.6 positions) — expected for a chaotic sport. Win/podium/points probabilities are the more useful numbers: AUC 0.97 / 0.94 / 0.84, well above random. These are measured on a chronological hold-out (the most recent ~20% of races: 16 races, 352 driver results, as of the Oct 25 retrain) and change slightly with each retrain.
 - **Next-race grid is assumed**, not real — actual grid positions aren't known until qualifying finishes, so the forecast uses each driver's most recent race grid as a stand-in.
 - **Live telemetry only works during an actual session window**, and OpenF1's real-time tier requires a paid API key; outside that, the UI correctly shows a "no session live" state rather than anything live.
 
